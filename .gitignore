@@ -1,0 +1,6 @@
+# macOS
+.DS_Store
+._*
+
+# Obsidian per-user workspace state (optional)
+# .obsidian/workspace.json
