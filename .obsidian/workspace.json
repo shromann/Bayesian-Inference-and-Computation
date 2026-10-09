@@ -1,0 +1,223 @@
+{
+  "main": {
+    "id": "1c46a9c94d1e5cf9",
+    "type": "split",
+    "children": [
+      {
+        "id": "ceb972004e30cf85",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "c21cb1d11044bf0a",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Graph view"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "64cf0ada899155bd",
+    "type": "split",
+    "children": [
+      {
+        "id": "30885e0ef4b741cc",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "d6f9de925edcae25",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "f216c670ac329373",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "20bf1ff7cfc9b606",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "d30d718fe794d755",
+    "type": "split",
+    "children": [
+      {
+        "id": "a9ec08f0bb844a23",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "fb1b186e8d67e1db",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks"
+            }
+          },
+          {
+            "id": "0ac0d952f67fb061",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links"
+            }
+          },
+          {
+            "id": "bc598ba076ed7aa3",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "fcb9e2b69f93e194",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "09a14863ed046356",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "c21cb1d11044bf0a",
+  "lastOpenFiles": [
+    "notes/Monte Carlo Integration.md",
+    "notes/Wishart Distribution.md",
+    "notes/Week 4 Overview.md",
+    "notes/Week 3 Overview.md",
+    "notes/Week 2 Overview.md",
+    "notes/Week 1 Overview.md",
+    "notes/Law of Large Numbers.md",
+    "notes/Jeffreys Prior.md",
+    "notes/Tutorial Week 4.md",
+    "notes/Tutorial Week 3.md",
+    "notes/Tutorial Week 2.md",
+    "notes/Tutorial Week 1.md",
+    "notes/Glossary.md",
+    "notes/Conjugate Prior Reference Table.md",
+    "notes/Negative Binomial Distribution.md",
+    "notes/Normal Distribution.md",
+    "notes/Poisson Distribution.md",
+    "notes/Binomial Distribution.md",
+    "notes/Gamma Distribution.md",
+    "notes/Beta Distribution.md",
+    "notes/Probability Distributions.md",
+    "notes/Effective Sample Size.md",
+    "notes/Importance Sampling.md",
+    "notes/Central Limit Theorem.md",
+    "notes/Posterior Asymptotics.md",
+    "notes/Loss Functions.md",
+    "Untitled.base",
+    "lectures/Lecture Week 1.pdf",
+    "notes",
+    "lectures",
+    "tutorial/Tutorial Week 4.pdf",
+    "tutorial/Tutorial Week 3.pdf",
+    "tutorial/Tutorial Week 2.pdf",
+    "tutorial/Tutorial Week 1.pdf",
+    "lectures/Lecture Week 4.pdf",
+    "lectures/Lecture Week 3.pdf"
+  ]
+}
