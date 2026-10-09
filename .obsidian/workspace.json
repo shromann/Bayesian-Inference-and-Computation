@@ -4,17 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "ceb972004e30cf85",
+        "id": "70214a773609009c",
         "type": "tabs",
         "children": [
           {
-            "id": "c21cb1d11044bf0a",
+            "id": "a5bdb9e656e5d6ce",
             "type": "leaf",
             "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "Graph view"
+              "type": "markdown",
+              "state": {
+                "file": "notes/Week 2/Conjugate Priors.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Conjugate Priors"
             }
           }
         ]
@@ -181,8 +185,9 @@
       "bases:Create new base": false
     }
   },
-  "active": "c21cb1d11044bf0a",
+  "active": "a5bdb9e656e5d6ce",
   "lastOpenFiles": [
+    "notes/Week 1/Credible Intervals.md",
     "notes/Monte Carlo Integration.md",
     "notes/Wishart Distribution.md",
     "notes/Week 4 Overview.md",
@@ -208,7 +213,6 @@
     "notes/Importance Sampling.md",
     "notes/Central Limit Theorem.md",
     "notes/Posterior Asymptotics.md",
-    "notes/Loss Functions.md",
     "Untitled.base",
     "lectures/Lecture Week 1.pdf",
     "notes",
