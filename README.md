@@ -1,8 +1,9 @@
 # Bayesian Inference and Computation
 
 [![Obsidian](https://img.shields.io/badge/Obsidian-Vault-7C3AED?logo=obsidian&logoColor=white)](https://obsidian.md)
-[![Markdown](https://img.shields.io/badge/Markdown-Notes-000000?logo=markdown&logoColor=white)](https://commonmark.org)
 [![LaTeX](https://img.shields.io/badge/LaTeX-Math-008080?logo=latex&logoColor=white)](https://www.latex-project.org)
+[![Markdown](https://img.shields.io/badge/Markdown-Notes-000000?logo=markdown&logoColor=white)](https://commonmark.org)
+
 
 An Obsidian vault of course notes for **MATH3871/MATH5960 — Bayesian Inference and Computation** (Term 3, 2026, Prof. Scott Sisson), turned into a linked knowledge graph so the material can be learned by following how one idea builds on the next.
 
