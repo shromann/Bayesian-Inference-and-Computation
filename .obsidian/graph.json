@@ -1,22 +1,22 @@
 {
   "collapse-filter": false,
-  "search": "",
+  "search": "tag:#week-4",
   "showTags": false,
   "showAttachments": false,
   "hideUnresolved": false,
   "showOrphans": true,
   "collapse-color-groups": true,
   "colorGroups": [],
-  "collapse-display": false,
+  "collapse-display": true,
   "showArrow": false,
   "textFadeMultiplier": -1,
   "nodeSizeMultiplier": 1,
   "lineSizeMultiplier": 0.504501787310098,
-  "collapse-forces": false,
+  "collapse-forces": true,
   "centerStrength": 0,
   "repelStrength": 0,
   "linkStrength": 1,
   "linkDistance": 500,
-  "scale": 0.9917151828184119,
-  "close": true
+  "scale": 2.0019690696299843,
+  "close": false
 }
