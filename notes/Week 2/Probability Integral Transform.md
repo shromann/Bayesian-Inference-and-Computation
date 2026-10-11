@@ -3,7 +3,7 @@ tags: [probability, theorem, week-2]
 week: 2
 type: concept
 ---
-
+Frp
 # Probability Integral Transform
 
 > [!abstract] One-line summary

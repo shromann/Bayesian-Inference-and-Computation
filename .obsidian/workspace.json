@@ -4,21 +4,19 @@
     "type": "split",
     "children": [
       {
-        "id": "1fd564d708b13261",
+        "id": "54aecf4725514a18",
         "type": "tabs",
         "children": [
           {
-            "id": "c3aad4c7fd235dbb",
+            "id": "bade693a8f855fe5",
             "type": "leaf",
             "state": {
-              "type": "markdown",
+              "type": "pdf",
               "state": {
-                "file": "notes/Week 4/Effective Sample Size.md",
-                "mode": "source",
-                "source": false
+                "file": "mid-term/2025-MATH3871-5960-midSession-solutions.pdf"
               },
-              "icon": "lucide-file",
-              "title": "Effective Sample Size"
+              "icon": "lucide-file-text",
+              "title": "2025-MATH3871-5960-midSession-solutions"
             }
           }
         ]
@@ -83,8 +81,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 213.87025833129883,
-    "collapsed": true
+    "width": 351.2050361633301
   },
   "right": {
     "id": "d30d718fe794d755",
@@ -186,43 +183,43 @@
       "bases:Create new base": false
     }
   },
-  "active": "c3aad4c7fd235dbb",
+  "active": "bade693a8f855fe5",
   "lastOpenFiles": [
+    "notes/Week 4/Posterior Asymptotics.md",
+    "mid-term/2025-MATH3871-5960-midSession.pdf",
+    "overview.canvas",
+    "mid-term/formula_sheet.pdf",
+    "notes/Week 1/Monte Carlo Integration.md",
+    "mid-term/2025-MATH3871-5960-midSession-solutions.pdf",
+    "notes/Week 4/Week 4 Lesson Notes.md",
+    "notes/Week 3/Week 3 Lesson Notes.md",
+    "notes/Week 2/Week 2 Lesson Notes.md",
+    "notes/Week 2/Tutorial Week 2.md",
+    "Scratchpad.md",
+    "lectures/Lecture Week 2.pdf",
+    "tutorial/Tutorial Week 3.pdf",
+    "notes/Week 1/Week 1 Lesson Notes.md",
+    "notes/Week 2/Normalising Constant.md",
+    "notes/Week 2/Week 2 Overview.md",
+    "mid-term/midsession_2017.pdf",
+    "notes/Week 2/Probability Integral Transform.md",
+    "notes/Week 1/Week 1 Overview.md",
+    "tutorial/Tutorial Week 4.pdf",
+    "mid-term/midsession-2017-solutions.pdf",
+    "sample_formula.pdf",
+    "mid-term",
+    "notes/Week 4/Effective Sample Size.md",
     "notes/Week 4/Importance Sampling.md",
     "notes/Week 4/Posterior Decision Theory.md",
     "notes/Week 4/Week 4 Overview.md",
     "notes/Week 3/Week 3 Overview.md",
     "notes/Week 3/Mixture Priors.md",
-    "lectures/Lecture Week 2.pdf",
     "notes/Week 2/Improper Priors.md",
     "notes/Week 2/Jeffreys Prior.md",
     "notes/Week 2/Fisher Information.md",
     "notes/Week 2/Exponential Family.md",
-    "notes/Week 2/Week 2 Overview.md",
     "notes/Week 1/Maximum Likelihood Estimation.md",
-    "tutorial/Tutorial Week 2.pdf",
     "notes/Week 4/Monte Carlo Error.md",
-    "notes/Week 1/Week 1 Overview.md",
-    "notes/Week 1/Monte Carlo Integration.md",
-    "notes/Week 1/Bayesian Updating.md",
-    "notes/Week 2/Conjugate Priors.md",
-    "notes/Week 1/Credible Intervals.md",
-    "notes/Monte Carlo Integration.md",
-    "notes/Wishart Distribution.md",
-    "notes/Week 4 Overview.md",
-    "notes/Week 3 Overview.md",
-    "notes/Week 2 Overview.md",
-    "notes/Week 1 Overview.md",
-    "notes/Law of Large Numbers.md",
-    "notes/Jeffreys Prior.md",
-    "notes/Tutorial Week 4.md",
-    "Untitled.base",
-    "lectures/Lecture Week 1.pdf",
-    "notes",
-    "lectures",
-    "tutorial/Tutorial Week 4.pdf",
-    "tutorial/Tutorial Week 3.pdf",
-    "tutorial/Tutorial Week 1.pdf",
-    "lectures/Lecture Week 4.pdf"
+    "notes/Week 1/Bayesian Updating.md"
   ]
 }

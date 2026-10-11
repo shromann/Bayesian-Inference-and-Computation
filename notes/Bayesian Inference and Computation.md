@@ -20,6 +20,17 @@ We start from a parameter $\theta$ and a prior belief $\pi(\theta)$. We observe 
 | 3 | Multivariate models & rejection sampling | What if there are many parameters? | [[Week 3 Overview]] |
 | 4 | Decisions, asymptotics & importance sampling | What do we *do* with the posterior? | [[Week 4 Overview]] |
 
+## Lesson notes (guided walk-throughs)
+
+Topic-by-topic teaching notes with derivations, worked examples, and checkpoint questions (with answers). Each one complements the week's Overview and concept notes.
+
+| Week | Lesson notes | Topics covered |
+|---|---|---|
+| 1 | [[Week 1 Lesson Notes]] | Probability & Bayes' theorem · likelihood · frequentist/MLE · Bayesian turn · priors · posterior inference · credible intervals · predictive · Monte Carlo & LLN · water consumption |
+| 2 | [[Week 2 Lesson Notes]] | Normalising constant · conjugate priors · exponential family · improper priors · Fisher information & Jeffreys · MAP · probability integral transform & inversion sampling |
+| 3 | [[Week 3 Lesson Notes]] | Mixture priors & prior predictive checking · multivariate models · multivariate conjugate toolkit · Normal unknown mean/variance · rejection sampling |
+| 4 | [[Week 4 Lesson Notes]] | Decision theory · loss functions · posterior asymptotics · CLT & Monte Carlo error · importance sampling · effective sample size |
+
 ## Concept clusters
 
 ### 1. Foundations
@@ -72,6 +83,9 @@ We start from a parameter $\theta$ and a prior belief $\pi(\theta)$. We observe 
 2. Move to [[Week 2 Overview]] and master [[Conjugate Priors]] before touching samplers.
 3. [[Week 3 Overview]] generalises everything to many parameters.
 4. [[Week 4 Overview]] is about what you *do* with a posterior — decisions and theory.
+
+> [!tip] Prefer a guided route?
+> Work through the **Lesson notes** in order ([[Week 1 Lesson Notes]] → [[Week 4 Lesson Notes]]). Each topic ends with checkpoint questions and answers, so you can test yourself before moving on. Use the week's Overview as a map and the individual concept notes for detail.
 
 > [!tip] How to use the links
 > Each note has a **Connections** section: *Builds on* (prerequisites), *Leads to* (what comes next), and *See also* (related). Follow *Builds on* backwards if something feels hard.

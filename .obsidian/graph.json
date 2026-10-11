@@ -1,6 +1,6 @@
 {
   "collapse-filter": false,
-  "search": "tag:#week-4",
+  "search": "",
   "showTags": false,
   "showAttachments": false,
   "hideUnresolved": false,
@@ -17,6 +17,6 @@
   "repelStrength": 0,
   "linkStrength": 1,
   "linkDistance": 500,
-  "scale": 2.0019690696299843,
-  "close": false
+  "scale": 0.8072836327234488,
+  "close": true
 }
