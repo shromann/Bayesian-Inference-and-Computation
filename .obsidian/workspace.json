@@ -11,12 +11,14 @@
             "id": "bade693a8f855fe5",
             "type": "leaf",
             "state": {
-              "type": "pdf",
+              "type": "markdown",
               "state": {
-                "file": "mid-term/2025-MATH3871-5960-midSession-solutions.pdf"
+                "file": "notes/Week 4/Week 4 Lesson Notes.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "lucide-file-text",
-              "title": "2025-MATH3871-5960-midSession-solutions"
+              "icon": "lucide-file",
+              "title": "Week 4 Lesson Notes"
             }
           }
         ]
@@ -186,29 +188,31 @@
   "active": "bade693a8f855fe5",
   "lastOpenFiles": [
     "notes/Week 4/Posterior Asymptotics.md",
-    "mid-term/2025-MATH3871-5960-midSession.pdf",
+    "notes/Week 4/Effective Sample Size.md",
     "overview.canvas",
+    "notes/Week 3/Wishart Distribution.md",
+    "notes/Week 2/Conjugate Priors.md",
+    "tutorial/Tutorial Week 3.pdf",
+    "tutorial/Tutorial Week 4.pdf",
+    "tutorial/Tutorial Week 1.pdf",
+    "mid-term/2025-MATH3871-5960-midSession-solutions.pdf",
+    "mid-term/2025-MATH3871-5960-midSession.pdf",
     "mid-term/formula_sheet.pdf",
     "notes/Week 1/Monte Carlo Integration.md",
-    "mid-term/2025-MATH3871-5960-midSession-solutions.pdf",
     "notes/Week 4/Week 4 Lesson Notes.md",
     "notes/Week 3/Week 3 Lesson Notes.md",
     "notes/Week 2/Week 2 Lesson Notes.md",
     "notes/Week 2/Tutorial Week 2.md",
     "Scratchpad.md",
     "lectures/Lecture Week 2.pdf",
-    "tutorial/Tutorial Week 3.pdf",
     "notes/Week 1/Week 1 Lesson Notes.md",
     "notes/Week 2/Normalising Constant.md",
     "notes/Week 2/Week 2 Overview.md",
     "mid-term/midsession_2017.pdf",
     "notes/Week 2/Probability Integral Transform.md",
     "notes/Week 1/Week 1 Overview.md",
-    "tutorial/Tutorial Week 4.pdf",
     "mid-term/midsession-2017-solutions.pdf",
     "sample_formula.pdf",
-    "mid-term",
-    "notes/Week 4/Effective Sample Size.md",
     "notes/Week 4/Importance Sampling.md",
     "notes/Week 4/Posterior Decision Theory.md",
     "notes/Week 4/Week 4 Overview.md",
@@ -218,8 +222,6 @@
     "notes/Week 2/Jeffreys Prior.md",
     "notes/Week 2/Fisher Information.md",
     "notes/Week 2/Exponential Family.md",
-    "notes/Week 1/Maximum Likelihood Estimation.md",
-    "notes/Week 4/Monte Carlo Error.md",
-    "notes/Week 1/Bayesian Updating.md"
+    "notes/Week 1/Maximum Likelihood Estimation.md"
   ]
 }
