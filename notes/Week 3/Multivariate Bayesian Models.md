@@ -32,10 +32,10 @@ The joint posterior **factorises**, so sampling is easy: first $\alpha$, then $\
 - **Multivariate regression:** conjugate priors are [[Multivariate Normal Distribution|multivariate normal]] for $\mu$ and [[Wishart Distribution|inverse Wishart]] for $\Sigma$.
 
 ## Multivariate conjugate structure
-| Univariate (scalar) | Multivariate |
-|---|---|
-| precision $\tau$, conjugate [[Gamma Distribution|Gamma]] | precision matrix $\Lambda$, conjugate [[Wishart Distribution|Wishart]] |
-| variance $\sigma^2$, conjugate [[Inverse Gamma Distribution|InvGamma]] | covariance $\Sigma$, conjugate [[Wishart Distribution|InvWishart]] |
+| Univariate (scalar)                                         | Multivariate |                                                              |                |
+| ----------------------------------------------------------- | ------------ | ------------------------------------------------------------ | -------------- |
+| precision $\tau$, conjugate [[Gamma Distribution            | [[Gamma]]    | precision matrix $\Lambda$, conjugate [[Wishart Distribution | [[Wishart]]    |
+| variance $\sigma^2$, conjugate [[Inverse Gamma Distribution | [[InvGamma]] | covariance $\Sigma$, conjugate [[Wishart Distribution        | [[InvWishart]] |
 
 For known $\Sigma$, the conjugate prior for $\mu$ is $N_d(\mu_0,\Sigma_0)$ and the posterior is $N_d(\hat\mu,\hat\Sigma)$ with
 $$\hat\mu=(\Sigma_0^{-1}+n\Sigma^{-1})^{-1}(\Sigma_0^{-1}\mu_0+n\Sigma^{-1}\bar x),\qquad \hat\Sigma=(\Sigma_0^{-1}+n\Sigma^{-1})^{-1}.$$
