@@ -4,3 +4,8 @@
 
 # Obsidian per-user workspace state (optional)
 # .obsidian/workspace.json
+
+# Node
+node_modules/
+package-lock.json
+package.json

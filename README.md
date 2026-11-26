@@ -19,9 +19,12 @@ An Obsidian vault of course notes for **MATH3871/MATH5960 — Bayesian Inference
 
 ```
 .
-├── lectures/   # Lecture PDFs (Weeks 1–4)
-├── tutorial/   # Tutorial problem PDFs (Weeks 1–4)
-└── notes/      # The knowledge graph (60 interlinked markdown notes)
+├── assignment/ # Assignment materials and submission
+├── final-exam/ # Sample final exam and solutions
+├── lectures/   # Lecture PDFs (Weeks 1–5, 7–10)
+├── mid-term/   # Mid-session exams, solutions, and formula sheet
+├── tutorial/   # Tutorial problem PDFs (Weeks 1–4, 7–10)
+└── notes/      # The knowledge graph (64 interlinked markdown notes)
     ├── Bayesian Inference and Computation.md   # Home map (start here)
     ├── Week 1/   # Foundations, frequentist vs Bayesian, Monte Carlo basics
     ├── Week 2/   # Conjugate/improper/Jeffreys priors, inversion sampling
@@ -44,12 +47,19 @@ Links use Obsidian `[[wikilinks]]`, which resolve by note name regardless of fol
 
 ## Course roadmap
 
-| Week | Theme | Overview |
-|---|---|---|
-| 1 | Foundations & Monte Carlo | `notes/Week 1/Week 1 Overview.md` |
-| 2 | Priors & inversion sampling | `notes/Week 2/Week 2 Overview.md` |
-| 3 | Multivariate models & rejection sampling | `notes/Week 3/Week 3 Overview.md` |
-| 4 | Decisions, asymptotics & importance sampling | `notes/Week 4/Week 4 Overview.md` |
+| Week | Theme | Materials | Notes |
+|---|---|---|---|
+| 1 | Foundations & Monte Carlo | Lecture, tutorial | `notes/Week 1/Week 1 Overview.md` |
+| 2 | Priors & inversion sampling | Lecture, tutorial | `notes/Week 2/Week 2 Overview.md` |
+| 3 | Multivariate models & rejection sampling | Lecture, tutorial | `notes/Week 3/Week 3 Overview.md` |
+| 4 | Decisions, asymptotics & importance sampling | Lecture, tutorial | `notes/Week 4/Week 4 Overview.md` |
+| 5 | — | Lecture | — |
+| 7 | — | Lecture, tutorial | — |
+| 8 | — | Lecture, tutorial | — |
+| 9 | — | Lecture, tutorial | — |
+| 10 | — | Lecture, tutorial | — |
+
+*Weeks 6 materials are not currently in the repo; Weeks 5, 7–10 have PDFs but no linked notes yet.*
 
 ## Reference
 
