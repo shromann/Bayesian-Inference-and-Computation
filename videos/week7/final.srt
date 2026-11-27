@@ -1,0 +1,355 @@
+1
+00:00:01,500 --> 00:00:12,050
+Week 7 has three connected stories: a better sampler, a graph language, and software that uses both.
+
+2
+00:00:14,033 --> 00:00:25,683
+First we fix Gibbs; then we learn to describe a model visually; then JAGS turns that picture into samples.
+
+3
+00:00:26,633 --> 00:00:32,633
+The question that motivates everything today.
+
+4
+00:00:36,666 --> 00:00:46,666
+Gibbs sampling updates one coordinate at a time, using the most up-to-date values of the others.
+
+5
+00:00:48,466 --> 00:00:59,016
+Target: a bivariate normal with correlation ρ = 0.8. The contours tilt because the coordinates are coupled.
+
+6
+00:01:02,499 --> 00:01:12,499
+Each horizontal move samples θ1 given θ2; each vertical move samples θ2 given the new θ1.
+
+7
+00:01:13,499 --> 00:01:22,399
+For this model the full conditionals are available, so Gibbs moves axis by axis.
+
+8
+00:01:26,399 --> 00:01:36,949
+Gibbs needs a sample from every full conditional. That is often the hardest part of the problem.
+
+9
+00:01:39,132 --> 00:01:49,132
+Inversion needs an invertible CDF; rejection needs a good proposal; importance sampling gives weights, not draws.
+
+10
+00:01:50,732 --> 00:01:57,432
+In a complicated model, none of these is reliably available.
+
+11
+00:01:58,399 --> 00:02:08,399
+We want a method that works for arbitrary blocks and only knows π up to proportionality.
+
+12
+00:02:12,299 --> 00:02:22,299
+MH replaces an exact conditional draw with an easy proposal and a carefully chosen accept–reject step.
+
+13
+00:02:23,599 --> 00:02:33,049
+Step 1: propose a candidate from a distribution q that we can easily sample from.
+
+14
+00:02:33,999 --> 00:02:41,799
+Step 2: draw a uniform random number to make the decision probabilistic.
+
+15
+00:02:43,099 --> 00:02:51,999
+Step 3: accept the candidate with probability α, otherwise stay exactly where you are.
+
+16
+00:02:53,765 --> 00:03:01,565
+The acceptance ratio compares target-and-proposal mass in both directions. Normalising constants cancel.
+
+17
+00:03:05,465 --> 00:03:14,915
+Same bivariate target, but now proposals are small isotropic normal jumps around the current point.
+
+18
+00:03:16,265 --> 00:03:26,265
+The chain starts far away at θ0 = (10, 0); the target is centred at zero.
+
+19
+00:03:30,265 --> 00:03:40,815
+Most small steps are accepted; the chain diffuses toward the high-density region and then wanders inside it.
+
+20
+00:03:42,398 --> 00:03:51,298
+The trace shows slow mixing: neighbouring draws are highly correlated because proposals are local.
+
+21
+00:03:52,265 --> 00:04:01,165
+High acceptance is not automatically good: many repeated states mean a large autocorrelated sample.
+
+22
+00:04:05,031 --> 00:04:16,681
+A Markov chain has π as its stationary distribution if probability flow out of each state equals flow in.
+
+23
+00:04:18,131 --> 00:04:24,281
+Imagine two states with stationary probabilities 0.7 and 0.3.
+
+24
+00:04:25,464 --> 00:04:35,464
+At equilibrium, the flow from θ to θ* must equal the flow back: π(θ)P(θ,θ*) = π(θ*)P(θ*,θ).
+
+25
+00:04:36,864 --> 00:04:46,314
+An arbitrary proposal q does not balance these flows. The acceptance probability α repairs it.
+
+26
+00:04:50,131 --> 00:05:03,431
+Suppose the forward weighted proposal is larger than the backward one. We must slow the forward move or speed up the return.
+
+27
+00:05:04,797 --> 00:05:12,597
+Assume, without loss of generality, that the forward flow is too large.
+
+28
+00:05:13,597 --> 00:05:20,847
+Balance the two flows after multiplying each by its acceptance probability.
+
+29
+00:05:22,597 --> 00:05:29,847
+The return move is already too rare, so never reject it.
+
+30
+00:05:31,597 --> 00:05:37,747
+Solving gives the ratio needed on the forward move.
+
+31
+00:05:39,531 --> 00:05:47,331
+In general cap the ratio at one: accept everything, or accept proportionally.
+
+32
+00:05:52,031 --> 00:06:01,481
+Now check that this choice really satisfies detailed balance, for both distinct states and stays.
+
+33
+00:06:03,031 --> 00:06:11,931
+For θ ≠ θ*, the transition density is just q times α.
+
+34
+00:06:13,797 --> 00:06:22,697
+Multiplying out collapses both sides to the minimum of the two weighted proposal flows.
+
+35
+00:06:23,864 --> 00:06:33,864
+The minimum is symmetric, so the identity holds. For θ = θ* it is trivially true.
+
+36
+00:06:37,831 --> 00:06:45,631
+If we propose from the full conditional itself, the MH correction disappears.
+
+37
+00:06:47,031 --> 00:06:53,731
+Pick the proposal to be exactly the full conditional distribution.
+
+38
+00:06:55,697 --> 00:07:03,497
+Every factor cancels: the acceptance probability is one, so Gibbs never rejects.
+
+39
+00:07:04,497 --> 00:07:15,047
+MH buys two things: you no longer need exact conditionals, and you can propose whole correlated blocks.
+
+40
+00:07:18,964 --> 00:07:26,764
+The proposal q is a design choice; different shapes give different samplers.
+
+41
+00:07:30,364 --> 00:07:38,164
+Random walk: symmetric jumps. Independence: fixed g. Single-site: only one coordinate moves.
+
+42
+00:07:38,964 --> 00:07:51,164
+Random-walk symmetry cancels q in α; independence has α = π*/g / (π/g); single-site reduces to a conditional MH update.
+
+43
+00:07:52,564 --> 00:08:01,464
+The original Metropolis algorithm is exactly this symmetric case; Hastings generalised q in 1970.
+
+44
+00:08:05,364 --> 00:08:17,014
+Proposal scale controls a trade-off: tiny steps are accepted often but explore slowly; huge steps explore but get rejected.
+
+45
+00:08:19,964 --> 00:08:31,064
+Large jumps stick near the start; well-scaled jumps mix; tiny jumps creep along in a nearly straight line.
+
+46
+00:08:32,330 --> 00:08:43,980
+Aim for roughly 23% acceptance in many dimensions or 44% in one dimension; compare in log space for stability.
+
+47
+00:08:47,897 --> 00:08:56,797
+Nodes are parameters or data; arrows say which variables a node's distribution depends on.
+
+48
+00:08:59,363 --> 00:09:09,913
+Factorise the joint by multiplying each node's density conditional on its parents — fork, chain and collider.
+
+49
+00:09:11,297 --> 00:09:20,747
+This product is the whole model: JAGS, BUGS and Stan all read models this way.
+
+50
+00:09:24,630 --> 00:09:33,530
+Two variables can be dependent overall yet independent once a third variable is known.
+
+51
+00:09:34,996 --> 00:09:43,896
+Children inherit dependence through their shared parents — think genotypes of children and parents.
+
+52
+00:09:44,663 --> 00:09:51,913
+Without information about the parents, the children's genotypes are marginally dependent.
+
+53
+00:09:54,163 --> 00:10:03,613
+Condition on Z and the link vanishes: the children are conditionally independent given the parents.
+
+54
+00:10:07,564 --> 00:10:16,464
+Two operations turn a DAG into an undirected graph that displays all conditional independencies.
+
+55
+00:10:17,930 --> 00:10:27,930
+Start with the DAG: note that D has parents B and C, which are not joined.
+
+56
+00:10:28,930 --> 00:10:37,830
+Step 1: 'marry' the parents — connect any two nodes that share a child.
+
+57
+00:10:38,997 --> 00:10:46,247
+Step 2: drop the arrowheads. The result is the conditional-independence graph.
+
+58
+00:10:47,497 --> 00:11:00,797
+Global Markov property: once B and C are known, D is separated from A, E and F — a local Gibbs update.
+
+59
+00:11:04,763 --> 00:11:13,663
+27 ages and lengths; model length as a nonlinear growth curve with normal noise.
+
+60
+00:11:15,029 --> 00:11:23,929
+The mean μᵢ is deterministic given α, β, γ and the observed age Xᵢ.
+
+61
+00:11:25,896 --> 00:11:37,546
+Pink: priors on α, β, γ, τ. Blue: data and deterministic mean. Arrows carry the dependencies into the likelihood.
+
+62
+00:11:39,096 --> 00:11:48,546
+The DAG factorisation is literally the posterior: priors times a product of 27 likelihood terms.
+
+63
+00:11:52,430 --> 00:12:03,530
+JAGS builds and runs the MCMC sampler for you — you supply data, a model and starting values.
+
+64
+00:12:05,296 --> 00:12:15,296
+Three inputs: the observed data, the BUGS model file, and initial values for the stochastic nodes.
+
+65
+00:12:16,496 --> 00:12:24,846
+Compile the DAG, burn in 2000 iterations, then keep 1000 samples per chain.
+
+66
+00:12:26,030 --> 00:12:34,930
+JAGS uses precision, not variance, in dnorm — and pow(gamma,x[i]) implements the growth curve.
+
+67
+00:12:35,896 --> 00:12:43,696
+Then diagnose: trace plots, densities, autocorrelation and Gelman–Rubin shrink factors across chains.
+
+68
+00:12:47,629 --> 00:12:56,529
+We can analyse this Gibbs sampler exactly — a perfect laboratory for understanding convergence.
+
+69
+00:12:58,095 --> 00:13:04,795
+The two full conditionals are normal with variance 1−ρ².
+
+70
+00:13:06,762 --> 00:13:20,612
+Each sweep multiplies the old state by ρ² and adds fresh noise; mean forgets the start as ρ^{2t}→0, variance relaxes to 1.
+
+71
+00:13:21,362 --> 00:13:30,812
+As ρ approaches ±1 the decay ρ^{2t} becomes painfully slow: highly correlated coordinates mix badly.
+
+72
+00:13:34,696 --> 00:13:46,346
+The prior is neither a single Beta nor flat — it is a 50–50 mixture of two Beta distributions.
+
+73
+00:13:48,096 --> 00:13:56,446
+The normalising constant is k₀ = 1/2, giving ½ Beta(2,4) + ½ Beta(1,1).
+
+74
+00:13:58,429 --> 00:14:06,779
+Blue: Beta(2,4) component; green: uniform component; yellow: the mixture that is our prior.
+
+75
+00:14:07,762 --> 00:14:15,012
+Mixture moments mix component moments: mean 0.4167, standard deviation about 0.254.
+
+76
+00:14:16,362 --> 00:14:26,362
+The binomial likelihood updates each component separately; the posterior is a new mixture with mean 0.3914.
+
+77
+00:14:30,296 --> 00:14:39,746
+Twenty weekly sales counts, independent Poisson(λ); a Gamma prior with mean 16 and sd 8.
+
+78
+00:14:41,296 --> 00:14:51,296
+For a Gamma(shape=a, rate=b), mean = a/b and variance = a/b², so a=4 and b=0.25.
+
+79
+00:14:53,296 --> 00:15:03,296
+Blue: diffuse prior centred at 16. Green: sharp posterior centred near 20 after 400 total sales.
+
+80
+00:15:04,696 --> 00:15:14,146
+Conjugacy updates shape to a+Σy and rate to b+n; the highest-density interval is [18.03, 21.90].
+
+81
+00:15:18,029 --> 00:15:29,129
+Known precision τ likelihood, Gamma prior on τ, and a conditional normal prior on μ centred at 500.
+
+82
+00:15:30,895 --> 00:15:41,445
+The prior on μ has precision 0.005τ — very weak compared with 20 observations at precision τ.
+
+83
+00:15:43,229 --> 00:15:54,329
+Conjugacy gives a normal conditional for μ and a Gamma conditional for τ; marginalising τ yields a Student-t.
+
+84
+00:15:55,895 --> 00:16:09,745
+The posterior for μ is a t distribution with 24 degrees of freedom, centred at 492.85. The green region is μ below 495.
+
+85
+00:16:10,695 --> 00:16:16,845
+Shading everything below 495 gives about 98.1% posterior probability.
+
+86
+00:16:20,762 --> 00:16:31,312
+The lab builds a Gibbs sampler from these three full conditionals. Here is where they come from.
+
+87
+00:16:32,895 --> 00:16:44,545
+Complete the square in β: the quadratic form is (Y−Xβ)ᵀ(Y−Xβ), giving β̂ and covariance φ⁻¹(XᵀX)⁻¹.
+
+88
+00:16:46,095 --> 00:16:58,295
+Holding β fixed, the φ terms are powers of φ times one exponential — Gamma with updated shape and scale.
+
+89
+00:17:00,095 --> 00:17:10,645
+Splitting the 2-dimensional block into β₀ and β₁ conditionals gives the scalar updates used in the lab.

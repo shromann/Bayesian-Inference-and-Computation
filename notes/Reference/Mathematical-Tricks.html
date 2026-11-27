@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bayesian Inference & Computation — Mathematical Tricks</title>
+  <script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['\\(','\\)']],
+      displayMath: [['\\[','\\]']],
+      macros: {
+        E: '\\mathbb{E}',
+        Var: '\\mathrm{Var}',
+        P: '\\mathrm{Pr}',
+        d: '\\mathrm{d}',
+        R: '\\mathbb{R}',
+        N: '\\mathcal{N}',
+        Be: '\\mathrm{Beta}',
+        Ga: '\\mathrm{Gamma}',
+        Bin: '\\mathrm{Binomial}',
+        Pois: '\\mathrm{Poisson}',
+        Unif: '\\mathrm{Uniform}',
+        InvGam: '\\mathrm{Inv\\text{-}Gamma}',
+        Dir: '\\mathrm{Dirichlet}',
+        KL: '\\mathrm{KL}',
+        ind: '\\mathbf{1}',
+        argmax: '\\operatorname*{argmax}',
+        argmin: '\\operatorname*{argmin}'
+      }
+    },
+    svg: { fontCache: 'global' }
+  };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --surface: #ffffff;
+      --surface-2: #f0f4fa;
+      --text: #1b2430;
+      --muted: #5b6b80;
+      --border: #dbe4ef;
+      --accent: #2a63d4;
+      --accent-soft: #e8f0ff;
+      --green: #1b7f5a;
+      --green-soft: #e8f7f1;
+      --amber: #9a6700;
+      --amber-soft: #fff6db;
+      --red: #b42318;
+      --red-soft: #fdecea;
+      --purple: #6941c6;
+      --purple-soft: #f1ecff;
+      --code-bg: #18212f;
+      --code-text: #edf2f8;
+      --shadow: 0 1px 2px rgba(16,24,40,.04), 0 8px 24px rgba(16,24,40,.04);
+      --radius: 14px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: var(--sans);
+      color: var(--text);
+      background: linear-gradient(180deg, #eef3fb 0%, var(--bg) 180px);
+      line-height: 1.6;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .layout {
+      display: grid;
+      grid-template-columns: 290px minmax(0, 1fr);
+      gap: 28px;
+      max-width: 1520px;
+      margin: 0 auto;
+      padding: 28px;
+    }
+    .sidebar {
+      position: sticky;
+      top: 20px;
+      align-self: start;
+      background: rgba(255,255,255,.88);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+      max-height: calc(100vh - 40px);
+      overflow: auto;
+    }
+    .sidebar h2 { margin: 0 0 8px; font-size: 1rem; }
+    .sidebar p { margin: 0 0 14px; color: var(--muted); font-size: .92rem; }
+    .toc { list-style: none; padding: 0; margin: 0; }
+    .toc li { margin: 2px 0; }
+    .toc a {
+      display: block;
+      padding: 7px 10px;
+      border-radius: 8px;
+      color: #334155;
+      font-size: .92rem;
+    }
+    .toc a:hover { background: var(--surface-2); text-decoration: none; color: var(--accent); }
+    .toc .sub { padding-left: 14px; font-size: .88rem; color: var(--muted); }
+    main { min-width: 0; }
+    .hero {
+      background: linear-gradient(135deg, #183b7a 0%, #2a63d4 55%, #5b8ff0 100%);
+      color: white;
+      padding: 34px 34px 30px;
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+    }
+    .hero h1 { margin: 0 0 10px; font-size: clamp(1.8rem, 3vw, 2.8rem); line-height: 1.15; letter-spacing: -.02em; }
+    .hero p { margin: 0; max-width: 900px; font-size: 1.02rem; color: rgba(255,255,255,.92); }
+    .meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+    .chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 12px; border-radius: 999px; font-size: .84rem; font-weight: 600;
+      background: rgba(255,255,255,.14); color: white; border: 1px solid rgba(255,255,255,.18);
+    }
+    section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 28px;
+      margin-bottom: 22px;
+    }
+    section h2 { margin: 0 0 6px; font-size: 1.55rem; letter-spacing: -.01em; }
+    section > p.lead { margin: 0 0 22px; color: var(--muted); }
+    h3 { margin: 28px 0 12px; font-size: 1.15rem; }
+    h4 { margin: 18px 0 8px; font-size: 1rem; }
+    .grid { display: grid; gap: 16px; }
+    .grid.two { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    .grid.three { grid-template-columns: repeat(3, minmax(0,1fr)); }
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+      background: #fff;
+    }
+    .card h4, .card h3 { margin-top: 0; }
+    .card p:last-child, .card ul:last-child { margin-bottom: 0; }
+    .callout {
+      padding: 14px 16px;
+      border-radius: 12px;
+      margin: 14px 0;
+      border: 1px solid transparent;
+    }
+    .callout .label { font-size: .76rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; margin-bottom: 4px; }
+    .callout.blue { background: var(--accent-soft); border-color: #cfe0ff; }
+    .callout.blue .label { color: var(--accent); }
+    .callout.green { background: var(--green-soft); border-color: #cdebdc; }
+    .callout.green .label { color: var(--green); }
+    .callout.amber { background: var(--amber-soft); border-color: #f0df9d; }
+    .callout.amber .label { color: var(--amber); }
+    .callout.red { background: var(--red-soft); border-color: #f5c7c2; }
+    .callout.red .label { color: var(--red); }
+    .callout.purple { background: var(--purple-soft); border-color: #ddd0ff; }
+    .callout.purple .label { color: var(--purple); }
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin: 14px 0;
+      font-size: .95rem;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+    th, td { padding: 11px 12px; vertical-align: top; text-align: left; border-bottom: 1px solid var(--border); }
+    th { background: #f8fbff; font-size: .83rem; text-transform: uppercase; letter-spacing: .04em; color: #475569; }
+    tr:last-child td { border-bottom: none; }
+    tr:nth-child(even) td { background: #fcfdff; }
+    code, .mono { font-family: var(--mono); font-size: .9em; }
+    code { background: #eef2f7; padding: 1px 5px; border-radius: 5px; color: #0f3d91; }
+    pre {
+      background: var(--code-bg); color: var(--code-text); padding: 16px; border-radius: 12px;
+      overflow: auto; font-family: var(--mono); font-size: .88rem; line-height: 1.55;
+    }
+    .formula {
+      background: var(--surface-2);
+      border: 1px solid #d9e5f5;
+      border-left: 4px solid var(--accent);
+      padding: 14px 16px;
+      border-radius: 10px;
+      margin: 12px 0;
+      overflow-x: auto;
+    }
+    .badge {
+      display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: .72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .04em; vertical-align: middle; margin-left: 6px;
+    }
+    .badge.exam { background: #fde68a; color: #7c4a03; }
+    .badge.core { background: #dbeafe; color: #1d4ed8; }
+    .badge.proof { background: #ede9fe; color: #6d28d9; }
+    .badge.careful { background: #fee2e2; color: #b91c1c; }
+    details {
+      border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; margin: 10px 0; background: #fbfdff;
+    }
+    summary { cursor: pointer; font-weight: 650; color: #24415f; }
+    details[open] summary { margin-bottom: 8px; }
+    .small { font-size: .92rem; color: var(--muted); }
+    .katex-display { overflow-x: auto; overflow-y: hidden; }
+    ul, ol { padding-left: 1.3rem; }
+    li + li { margin-top: .3rem; }
+    .footer { color: var(--muted); font-size: .9rem; text-align: center; padding: 8px 0 30px; }
+    @media (max-width: 1100px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; max-height: none; }
+    }
+    @media (max-width: 800px) {
+      .grid.two, .grid.three { grid-template-columns: 1fr; }
+      section, .hero { padding: 22px; }
+      .layout { padding: 16px; gap: 16px; }
+    }
+    @media print {
+      body { background: white; }
+      .layout { display: block; max-width: none; padding: 0; }
+      .sidebar { display: none; }
+      section, .hero { box-shadow: none; border: 1px solid #bbb; break-inside: avoid-page; }
+      a { color: black; text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>On this page</h2>
+      <p>Study sheet for MATH3871/5960. Use the quick reference first, then drill the derivation patterns.</p>
+      <ul class="toc">
+        <li><a href="#how-to-use">How to use</a></li>
+        <li><a href="#algebra">1. Algebra & manipulation</a></li>
+        <li><a href="#integration">2. Integration & kernels</a></li>
+        <li><a href="#conjugacy">3. Conjugate updates</a></li>
+        <li><a href="#model-comparison">4. Bayes factors & model comparison</a></li>
+        <li><a href="#mixtures">5. Mixture-model tricks</a></li>
+        <li><a href="#sampling">6. Rejection & importance sampling</a></li>
+        <li><a href="#mcmc">7. MCMC, MH, Gibbs</a></li>
+        <li><a href="#decision">8. Decision/asymptotic tricks</a></li>
+        <li><a href="#quick-ref">9. If you see this, do this</a></li>
+        <li><a href="#pitfalls">10. Common pitfalls</a></li>
+      </ul>
+      <div class="callout blue" style="margin-top:16px;">
+        <div class="label">Exam mindset</div>
+        Most exam calculations are: write the kernel, recognize the normalizing constant, or write a ratio where constants cancel.
+      </div>
+    </aside>
+
+    <main>
+      <header class="hero">
+        <h1>Mathematical Tricks for Bayesian Inference &amp; Computation</h1>
+        <p>A comprehensive study sheet covering the algebra, integration identities, posterior manipulations, and sampling/MCMC derivation patterns used throughout MATH3871/5960. Designed for final-exam revision: scan the quick reference, then use the detailed sections for the "why" and "how".</p>
+        <div class="meta">
+          <span class="chip">Core exam patterns</span>
+          <span class="chip">Derivation templates</span>
+          <span class="chip">Pitfalls & checks</span>
+          <span class="chip">MathJax formulas</span>
+        </div>
+      </header>
+      <section id="how-to-use">
+        <h2>How to use this sheet</h2>
+        <p class="lead">The course repeatedly uses a small set of moves. If you can spot the pattern, most derivations become bookkeeping.</p>
+        <div class="grid three">
+          <div class="card">
+            <h4>1. Identify the object</h4>
+            <p>Is it a posterior, marginal likelihood, prior predictive, acceptance probability, importance weight, Bayes factor, or full conditional? Write the object before manipulating it.</p>
+          </div>
+          <div class="card">
+            <h4>2. Keep only what matters</h4>
+            <p>Drop factors constant in the parameter: \(\pi(\theta\mid x)\propto L(x\mid\theta)\pi(\theta)\). In ratios, common constants cancel.</p>
+          </div>
+          <div class="card">
+            <h4>3. Recognize a known shape</h4>
+            <p>Beta kernel, Gamma kernel, normal quadratic, sum of squares, density-integrates-to-one, detailed balance, or self-normalized weights.</p>
+          </div>
+        </div>
+        <div class="callout amber">
+          <div class="label">Rule of thumb</div>
+          If the answer should be a distribution, get a <em>kernel</em> and recognize it. If the answer should be a probability/expectation/constant, either integrate a known kernel or write a ratio where unknown constants cancel.
+        </div>
+      </section>
+
+      <section id="algebra">
+        <h2>1. Algebra &amp; Manipulation Tricks <span class="badge core">core</span></h2>
+        <p class="lead">These are the low-level moves behind almost every posterior, MCMC ratio, and model-comparison calculation.</p>
+
+        <h3>1.1 Drop constants with respect to the parameter</h3>
+        <div class="formula">
+          \[
+            \pi(\theta\mid x)=\frac{L(x\mid\theta)\pi(\theta)}{m(x)} \propto L(x\mid\theta)\pi(\theta), \qquad m(x)=\int_\Theta L(x\mid\theta)\pi(\theta)\,\d\theta.
+          \]
+        </div>
+        <p>Anything not depending on \(\theta\) can be absorbed into the proportionality constant: normalizing constants, \(\prod x_i!\) in Poisson likelihoods, \( (2\pi)^{-n/2}\) in normals when \(\sigma^2\) is known, etc.</p>
+        <div class="callout green">
+          <div class="label">Use when</div>
+          You only need the posterior shape, a Gibbs full conditional, an MH ratio, or an importance weight up to a constant.
+        </div>
+
+        <h3>1.2 Work on the log scale</h3>
+        <div class="formula">
+          \[
+            \ell(\theta)=\log L(x\mid\theta)=\sum_{i=1}^n \log f(x_i\mid\theta), \qquad \log\frac{A}{B}=\log A-\log B.
+          \]
+        </div>
+        <p>Products become sums; tiny/huge values become numerically stable. In MH, compute \(\log \alpha = \min(0,\log\pi(y)-\log\pi(x)+\log q(x\mid y)-\log q(y\mid x))\).</p>
+
+        <h3>1.3 Complete the square for normal kernels <span class="badge exam">exam</span></h3>
+        <div class="formula">
+          \[
+            A\theta^2 - 2B\theta + C = A\left(\theta-\frac{B}{A}\right)^2 + \left(C-\frac{B^2}{A}\right), \qquad A>0.
+          \]
+        </div>
+        <p>Equivalent normal form: \(\exp\{-\frac{1}{2\tau}(\theta-m)^2\}\) means \(\theta\sim \N(m,\tau)\). This is the standard move for Normal-Normal updates, regression posteriors, and Gibbs conditionals.</p>
+        <details>
+          <summary>Normal-Normal template</summary>
+          <p>Data: \(y_i\mid\mu\sim\N(\mu,\sigma^2)\), known \(\sigma^2\). Prior: \(\mu\sim\N(m_0,s_0^2)\). Then</p>
+          \[
+            \pi(\mu\mid y)\propto \exp\!\left\{-\frac{1}{2\sigma^2}\sum_{i=1}^n(y_i-\mu)^2 - \frac{1}{2s_0^2}(\mu-m_0)^2\right\}.
+          \]
+          <p>Expand the \(\mu^2\) and \(\mu\) terms, complete the square, and read off the posterior mean/variance.</p>
+        </details>
+
+        <h3>1.4 Sum-of-squares decomposition</h3>
+        <div class="formula">
+          \[
+            \sum_{i=1}^n (y_i-\mu)^2 = \sum_{i=1}^n (y_i-\bar y)^2 + n(\bar y-\mu)^2 = (n-1)s^2 + n(\bar y-\mu)^2.
+          \]
+        </div>
+        <p>This separates data variability from the parameter \(\mu\). It is essential for the normal model with unknown mean and variance and appears in hierarchical/regression calculations.</p>
+
+        <h3>1.5 Exponent bookkeeping / kernel matching</h3>
+        <p>After multiplying likelihood and prior, collect powers of \(\theta\) and exponentials:</p>
+        <div class="formula">
+          \[
+            \theta^{p-1}(1-\theta)^{q-1} \;\Rightarrow\; \Be(p,q), \qquad \theta^{a-1}e^{-b\theta} \;\Rightarrow\; \Ga(a,b), \qquad e^{-\frac{1}{2\tau}(\theta-m)^2}\;\Rightarrow\;\N(m,\tau).
+          \]
+        </div>
+        <div class="callout red">
+          <div class="label">Careful</div>
+          Match the <em>parameterization</em> of the distribution on the formula sheet. For Gamma, confirm whether \(b\) is rate or scale; for Normal, confirm variance vs precision.
+        </div>
+
+        <h3>1.6 Convex combination / shrinkage form</h3>
+        <div class="formula">
+          \[
+            \E[\theta\mid y] = \lambda\,\E[\theta] + (1-\lambda)\,\hat\theta_{\text{data}}.
+          \]
+        </div>
+        <p>Example: Beta-Binomial with \(\theta\sim\Be(\alpha,\beta)\), \(y\mid\theta\sim\Bin(n,\theta)\), posterior mean \(m=\frac{\alpha+y}{\alpha+\beta+n}\) can be written as</p>
+        <div class="formula">
+          \[
+            m=\lambda\frac{\alpha}{\alpha+\beta} + (1-\lambda)\frac{y}{n}, \qquad \lambda=\frac{\alpha+\beta}{\alpha+\beta+n}\in(0,1).
+          \]
+        </div>
+        <p>This immediately proves the posterior mean lies between the prior mean and the sample proportion.</p>
+      </section>
+      <section id="integration">
+        <h2>2. Integration &amp; Kernel Tricks <span class="badge exam">high yield</span></h2>
+        <p class="lead">Many Bayesian integrals are not solved by brute force. You rewrite them as a known density times a constant, then use the fact that densities integrate to 1.</p>
+
+        <h3>2.1 The density-normalization trick</h3>
+        <div class="formula">
+          \[
+            \int_\Theta c\,p(\theta)\,\d\theta = c, \qquad \text{if } p(\theta)\text{ is a density over }\Theta.
+          \]
+        </div>
+        <p>Equivalently, if you can identify a kernel \(k(\theta)\) of a known density \(p(\theta)=k(\theta)/Z\), then \(\int k(\theta)\,\d\theta=Z\).</p>
+        <table>
+          <thead><tr><th>Kernel you see</th><th>Known density</th><th>Integral / constant</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>\(\theta^{a-1}(1-\theta)^{b-1},\; \theta\in(0,1)\)</td>
+              <td>\(\Be(a,b)\)</td>
+              <td>\(\displaystyle \int_0^1 \theta^{a-1}(1-\theta)^{b-1}\,\d\theta = B(a,b)=\frac{\Gamma(a)\Gamma(b)}{\Gamma(a+b)}\)</td>
+            </tr>
+            <tr>
+              <td>\(\theta^{a-1}e^{-b\theta},\; \theta>0\)</td>
+              <td>\(\Ga(a,b)\) (rate \(b\))</td>
+              <td>\(\displaystyle \int_0^\infty \theta^{a-1}e^{-b\theta}\,\d\theta = \frac{\Gamma(a)}{b^a}\)</td>
+            </tr>
+            <tr>
+              <td>\(\exp\!\left(-\frac{(\theta-m)^2}{2v}\right),\; \theta\in\R\)</td>
+              <td>\(\N(m,v)\)</td>
+              <td>\(\displaystyle \int_{-\infty}^{\infty} \exp\!\left(-\frac{(\theta-m)^2}{2v}\right)\d\theta = \sqrt{2\pi v}\)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>2.2 Prior predictive / marginal likelihood integrals</h3>
+        <div class="formula">
+          \[
+            p(y)=\int_\Theta p(y\mid\theta)\pi(\theta)\,\d\theta, \qquad m(x)=\int_\Theta L(x\mid\theta)\pi(\theta)\,\d\theta.
+          \]
+        </div>
+        <p>Same mathematical shape. The prior predictive averages the data model over the prior; the marginal likelihood averages the likelihood over the prior. Bayes factors are ratios of marginal likelihoods.</p>
+        <details>
+          <summary>Sample exam pattern: Uniform-Binomial prior predictive</summary>
+          <p>For \(y\mid\theta\sim\Bin(n,\theta)\), \(\theta\sim\Unif(0,1)\),</p>
+          \[
+            \P(y=k)=\int_0^1 \binom{n}{k}\theta^k(1-\theta)^{n-k}\,\d\theta = \binom{n}{k}B(k+1,n-k+1)=\frac{1}{n+1}.
+          \]
+          <p>The Beta integral is the whole trick.</p>
+        </details>
+
+        <h3>2.3 Marginalize by integrating out nuisance parameters</h3>
+        <div class="formula">
+          \[
+            \pi(\theta_1\mid x)=\int \pi(\theta_1,\theta_2\mid x)\,\d\theta_2.
+          \]
+        </div>
+        <p>Use when asked for a marginal posterior or when a parameter is a nuisance. Common examples: integrate out \(\sigma^2\) in the normal model to get a \(t\) marginal for \(\mu\); integrate out latent indicators in mixture models to get the observed-data likelihood.</p>
+
+        <h3>2.4 Change of variables / Jacobian <span class="badge careful">careful</span></h3>
+        <div class="formula">
+          \[
+            \phi=h(\theta),\; h\text{ monotone} \quad\Rightarrow\quad \pi_\phi(\phi)=\pi_\theta(h^{-1}(\phi))\left\lvert \frac{\d}{\d\phi}h^{-1}(\phi)\right\rvert.
+          \]
+        </div>
+        <table>
+          <thead><tr><th>Transform</th><th>Jacobian factor</th><th>Typical use</th></tr></thead>
+          <tbody>
+            <tr><td>\(\tau=1/\sigma^2\)</td><td>\(\left\lvert\d\sigma^2/\d\tau\right\rvert=\tau^{-2}\)</td><td>Gamma precision \(\leftrightarrow\) Inverse-Gamma variance</td></tr>
+            <tr><td>\(\phi=\log\theta,\;\theta>0\)</td><td>\(\theta=d e^\phi/d\phi\)</td><td>Log-scale random walk proposals / stable parameterization</td></tr>
+            <tr><td>\(\phi=\operatorname{logit}(\theta)\)</td><td>\(\theta(1-\theta)\)</td><td>Unconstrained sampling for probabilities</td></tr>
+          </tbody>
+        </table>
+        <div class="callout amber">
+          <div class="label">Jeffreys connection</div>
+          Jeffreys prior is invariant under one-to-one reparameterization because \(I(\phi)=I(\theta)(\d\theta/\d\phi)^2\), so \(|I(\phi)|^{1/2}=|I(\theta)|^{1/2}|\d\theta/\d\phi|\).
+        </div>
+
+        <h3>2.5 Complete a normal/Gamma inside an integral</h3>
+        <p>When marginalizing, don’t expand everything blindly. Pull out factors independent of the integration variable, complete the square (normal) or collect exponents (Gamma), then replace the integral by its known normalizing constant.</p>
+        <div class="formula">
+          \[
+            \int_{-\infty}^{\infty} \exp\!\left\{-\frac{1}{2}\left[A\mu^2-2B\mu\right]\right\}\d\mu = \sqrt{\frac{2\pi}{A}}\exp\!\left\{\frac{B^2}{2A}\right\}.
+          \]
+        </div>
+      </section>
+      <section id="conjugacy">
+        <h2>3. Conjugate Updates &amp; Kernel Recognition <span class="badge core">core</span></h2>
+        <p class="lead">Conjugacy is the "recognize the kernel, read off parameters" trick. It saves you from computing \(m(x)\) directly.</p>
+
+        <h3>3.1 The conjugate-update template</h3>
+        <ol>
+          <li>Write \(L(x\mid\theta)\) and keep only \(\theta\)-dependent factors.</li>
+          <li>Write \(\pi(\theta)\) as a kernel.</li>
+          <li>Multiply and collect exponents / quadratic terms.</li>
+          <li>Match to a known family and state the normalizing constant only if asked.</li>
+        </ol>
+
+        <h3>3.2 Common conjugate pairs</h3>
+        <table>
+          <thead><tr><th>Likelihood</th><th>Prior</th><th>Posterior</th><th>Kernel move</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>\(y\mid\theta\sim\Bin(n,\theta)\)</td>
+              <td>\(\theta\sim\Be(\alpha,\beta)\)</td>
+              <td>\(\Be(\alpha+y,\;\beta+n-y)\)</td>
+              <td>\(\theta^y(1-\theta)^{n-y}\theta^{\alpha-1}(1-\theta)^{\beta-1}\)</td>
+            </tr>
+            <tr>
+              <td>\(x_i\mid\theta\sim\Pois(\theta)\)</td>
+              <td>\(\theta\sim\Ga(\alpha,\beta)\)</td>
+              <td>\(\Ga(\alpha+\sum x_i,\;\beta+n)\)</td>
+              <td>\(e^{-n\theta}\theta^{\sum x_i}\theta^{\alpha-1}e^{-\beta\theta}\)</td>
+            </tr>
+            <tr>
+              <td>\(x_i\mid\mu\sim\N(\mu,\sigma^2)\), \(\sigma^2\) known</td>
+              <td>\(\mu\sim\N(m_0,s_0^2)\)</td>
+              <td>\(\N(m_n,s_n^2)\)</td>
+              <td>Complete the square in \(\mu\)</td>
+            </tr>
+            <tr>
+              <td>\(x_i\mid\mu,\sigma^2\sim\N(\mu,\sigma^2)\), \(\mu\) known</td>
+              <td>\(\sigma^2\sim\InvGam(\alpha,\beta)\)</td>
+              <td>\(\InvGam(\alpha+n/2,\;\beta+\frac12\sum(x_i-\mu)^2)\)</td>
+              <td>Collect powers of \(\sigma^2\) and \(1/\sigma^2\) in exponent</td>
+            </tr>
+            <tr>
+              <td>\(x_i\mid\theta\sim\operatorname{Exp}(\theta)\) or Gamma with known shape</td>
+              <td>\(\theta\sim\Ga(\alpha,\beta)\)</td>
+              <td>Gamma with updated shape/rate</td>
+              <td>\(\theta^n e^{-\theta\sum x_i}\theta^{\alpha-1}e^{-\beta\theta}\)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <details>
+          <summary>Beta-Binomial derivation (exam template)</summary>
+          <p>Let \(y\mid\theta\sim\Bin(n,\theta)\), \(\pi(\theta)=\Be(\alpha,\beta)\). Then</p>
+          \[
+          \begin{aligned}
+            \pi(\theta\mid y) &\propto \binom{n}{y}\theta^y(1-\theta)^{n-y}\cdot \frac{\Gamma(\alpha+\beta)}{\Gamma(\alpha)\Gamma(\beta)}\theta^{\alpha-1}(1-\theta)^{\beta-1} \\
+            &\propto \theta^{\alpha+y-1}(1-\theta)^{\beta+n-y-1}.
+          \end{aligned}
+          \]
+          <p>Therefore \(\theta\mid y\sim\Be(\alpha+y,\beta+n-y)\). The posterior mean is \(\frac{\alpha+y}{\alpha+\beta+n}\).</p>
+        </details>
+
+        <h3>3.3 Normal unknown mean and variance: the two key decompositions</h3>
+        <div class="formula">
+          \[
+            \sum_{i=1}^n (y_i-\mu)^2 = (n-1)s^2+n(\bar y-\mu)^2, \qquad s^2=\frac{1}{n-1}\sum_{i=1}^n(y_i-\bar y)^2.
+          \]
+        </div>
+        <p>With prior \(\pi(\mu,\sigma^2)\propto 1/\sigma^2\), the joint posterior factorizes as</p>
+        <div class="formula">
+          \[
+            \mu\mid\sigma^2,y\sim \N\!\left(\bar y,\frac{\sigma^2}{n}\right), \qquad \sigma^2\mid y\sim \operatorname{Scaled\text{-}Inv\text{-}}\chi^2(n-1,s^2).
+          \]
+        </div>
+        <p>Integrating out \(\sigma^2\) gives \(\frac{\mu-\bar y}{s/\sqrt{n}}\mid y \sim t_{n-1}\). The trick is: complete square in \(\mu\), then recognize a Gamma/Inv-\(\chi^2\) integral in \(\sigma^2\).</p>
+
+        <div class="callout blue">
+          <div class="label">Posterior predictive</div>
+          For conjugate models, you can often compute \(p(\tilde y\mid y)=\int p(\tilde y\mid\theta)\pi(\theta\mid y)\d\theta\) by the same kernel-recognition trick. Prior predictive uses \(\pi(\theta)\); posterior predictive uses \(\pi(\theta\mid y)\).
+        </div>
+      </section>
+
+      <section id="model-comparison">
+        <h2>4. Bayes Factors &amp; Model Comparison <span class="badge exam">exam</span></h2>
+        <p class="lead">Model comparison questions usually ask for a definition, a marginal-likelihood integral, or a sensitivity/improper-prior argument. Keep the algebra clean and state what cancels.</p>
+
+        <h3>4.1 Marginal likelihood and Bayes factor</h3>
+        <div class="formula">
+          \[
+            m_j(x)=p(x\mid M_j)=\int_{\Theta_j} f_j(x\mid \theta_j)\pi_j(\theta_j)\,\d\theta_j, \qquad B_{12}=\frac{m_1(x)}{m_2(x)}.
+          \]
+        </div>
+        <p>Posterior odds: \(\frac{P(M_1\mid x)}{P(M_2\mid x)}=B_{12}\frac{P(M_1)}{P(M_2)}\). The Bayes factor is the evidence from data; prior model probabilities are separate.</p>
+
+        <div class="callout blue">
+          <div class="label">Interpretation scale (common)</div>
+          \(B_{12}>1\) supports \(M_1\). Rough Jeffreys-style intuition: 1-3 weak, 3-10 moderate, 10-30 strong, &gt;30 very strong (use the scale given in your course if specified).
+        </div>
+
+        <h3>4.2 Prior sensitivity trick</h3>
+        <p>With strong data, posteriors within a fixed model may be stable, but Bayes factors can still be sensitive because \(m_j(x)=\int f_j\pi_j\) averages the likelihood over the <em>whole</em> prior. Making a prior very diffuse can heavily penalize a model by spreading mass over unlikely parameter values.</p>
+        <div class="callout red">
+          <div class="label">Improper priors pitfall</div>
+          If \(\pi(\theta)=c g(\theta)\) is improper, \(c\) is arbitrary. A Bayes factor involving an arbitrary constant is not well-defined. This is why fractional/partial/intrinsic Bayes factors exist.
+        </div>
+
+        <h3>4.3 Fractional Bayes factor <span class="badge proof">proof pattern</span></h3>
+        <div class="formula">
+          \[
+            B_{12}^{F}(b)=\frac{q_1(x\mid b)}{q_2(x\mid b)}, \qquad q_j(x\mid b)=\frac{\int f_j(x\mid\theta_j)\pi_j(\theta_j)\,\d\theta_j}{\int f_j(x\mid\theta_j)^b\pi_j(\theta_j)\,\d\theta_j},\quad b\in(0,1].
+          \]
+        </div>
+        <p>Idea: use fraction \(b\) of the likelihood to "train" the improper prior into a proper posterior-like object, then use the remaining \(1-b\) information for comparison. If \(\pi_j=c_j g_j\), the arbitrary \(c_j\) appears in numerator and denominator of \(q_j\) and cancels.</p>
+        <details>
+          <summary>Why the constant cancels</summary>
+          \[
+            q_j(x\mid b)=\frac{\int f_j(x\mid\theta_j)c_j g_j(\theta_j)\,\d\theta_j}{\int f_j(x\mid\theta_j)^b c_j g_j(\theta_j)\,\d\theta_j}=\frac{\int f_j(x\mid\theta_j)g_j(\theta_j)\,\d\theta_j}{\int f_j(x\mid\theta_j)^b g_j(\theta_j)\,\d\theta_j}.
+          \]
+          <p>The same \(c_j\) cancels inside model \(j\). This is the key exam sentence.</p>
+        </details>
+
+        <h3>4.4 Exam checklist for Bayes-factor questions</h3>
+        <ul>
+          <li>Define \(m_j(x)\) explicitly as an integral over the parameter space.</li>
+          <li>State the prior (including whether it is proper/improper).</li>
+          <li>If improper, look for arbitrary constant \(c\) and explain why ordinary BF is problematic.</li>
+          <li>For fractional BF, write both full and training integrals; show cancellation.</li>
+          <li>If asked for large \(n\), look at likelihood concentration / marginal-likelihood behavior; be careful not to confuse posterior consistency with BF prior sensitivity.</li>
+        </ul>
+      </section>
+
+      <section id="mixtures">
+        <h2>5. Mixture-Model Tricks <span class="badge exam">exam</span></h2>
+        <p class="lead">Mixtures combine a sum (over components) with a product (over observations). The latent-indicator trick turns this into something Gibbs-friendly.</p>
+
+        <h3>5.1 Observed-data likelihood</h3>
+        <div class="formula">
+          \[
+            y_i \mid \theta, w \sim \sum_{m=1}^M w_m f_m(y_i\mid \theta_m), \qquad w_m\ge0,\; \sum_{m=1}^M w_m=1.
+          \]
+        </div>
+        <div class="formula">
+          \[
+            p(y\mid \theta,w)=\prod_{i=1}^n \left(\sum_{m=1}^M w_m f_m(y_i\mid\theta_m)\right).
+          \]
+        </div>
+        <p>The sum inside the product is why direct computation/sampling is awkward.</p>
+
+        <h3>5.2 Latent indicator augmentation</h3>
+        <p>Introduce \(z_i\in\{1,\ldots,M\}\), or one-hot \(z_{im}=\ind(z_i=m)\), with \(P(z_i=m\mid w)=w_m\). Then</p>
+        <div class="formula">
+          \[
+            p(y,z\mid\theta,w)=\prod_{i=1}^n \prod_{m=1}^M \left[w_m f_m(y_i\mid\theta_m)\right]^{z_{im}}.
+          \]
+        </div>
+        <p>This is multiplicative in components and gives simple full conditionals. Integrating/summing out \(z\) recovers the observed-data likelihood.</p>
+
+        <h3>5.3 Full conditional when a component is empty <span class="badge careful">key exam point</span></h3>
+        <p>Let \(S_m=\{i:z_{im}=1\}\) and \(n_m=|S_m|\). The conditional for \(\theta_m\) is</p>
+        <div class="formula">
+          \[
+            \pi(\theta_m\mid \cdots) \propto \left[\prod_{i\in S_m} f_m(y_i\mid\theta_m)\right] \pi(\theta_m\mid\theta_{-m}).
+          \]
+        </div>
+        <p>If \(n_m=0\), the product is empty (equals 1), so \(\pi(\theta_m\mid \cdots, z_m=0)\propto \pi(\theta_m\mid\theta_{-m})\). The component parameter is drawn from its conditional prior. Therefore that prior conditional must be <strong>proper</strong>.</p>
+
+        <h3>5.4 Label switching / non-identifiability</h3>
+        <div class="callout amber">
+          <div class="label">The problem</div>
+          The likelihood is invariant under permutation of component labels: swapping \((w_1,\theta_1)\) and \((w_2,\theta_2)\) gives the same density for \(y\). MCMC may jump between equivalent modes.
+        </div>
+        <ul>
+          <li><strong>Ordering constraint:</strong> e.g. \(\mu_1<\cdots<\mu_M\), or order by weights/variances; simple but can distort inference.</li>
+          <li><strong>Informative/non-exchangeable priors:</strong> break symmetry if scientifically justified.</li>
+          <li><strong>Post-processing/relabeling:</strong> align sampled labels by minimizing a loss over permutations.</li>
+          <li><strong>Inference on label-invariant quantities:</strong> predictive density, clustering probabilities after relabeling, etc.</li>
+        </ul>
+      </section>
+
+      <section id="sampling">
+        <h2>6. Rejection &amp; Importance Sampling <span class="badge exam">exam</span></h2>
+        <p class="lead">These methods are all about ratios: target over proposal. The normalizing constant is often unknown, but ratios/weights save you.</p>
+
+        <h3>6.1 Rejection sampling</h3>
+        <p>Want samples from target \(f\) (possibly unnormalized \(\tilde f\)). Choose proposal \(g\) with same support and \(K\ge \sup_x f(x)/g(x)\).</p>
+        <div class="formula">
+          \[
+            \text{Draw } X\sim g,\; U\sim\Unif(0,1). \quad \text{Accept if } U \le \frac{f(X)}{K g(X)}.
+          \]
+        </div>
+        <p>Acceptance probability is \(1/K\) when \(f,g\) are normalized: \(P(\text{acc})=\int g(x)\frac{f(x)}{Kg(x)}\d x=1/K\). So smaller \(K\) is better.</p>
+
+        <details>
+          <summary>Correctness proof template <span class="badge proof">proof</span></summary>
+          <p>For any set \(A\),</p>
+          \[
+          \begin{aligned}
+            P(X\in A \mid \text{acc}) &= \frac{P(X\in A,\text{acc})}{P(\text{acc})} \\
+            &= \frac{\int_A g(x)\frac{f(x)}{Kg(x)}\,\d x}{\int_\mathcal{X} g(x)\frac{f(x)}{Kg(x)}\,\d x} = \frac{\int_A f(x)\,\d x}{\int_\mathcal{X} f(x)\,\d x}=F(A).
+          \end{aligned}
+          \]
+          <p>The \(g(x)\) cancels and \(K\) cancels. That's the whole proof.</p>
+        </details>
+
+        <div class="callout amber">
+          <div class="label">Finding K</div>
+          Maximize \(h(x)=f(x)/g(x)\) (or \(\tilde f/g\)) by derivative/critical points, boundaries, or monotonicity. Report the maximizing \(x\) and verify it is a maximum if needed.
+        </div>
+
+        <h3>6.2 Importance sampling</h3>
+        <div class="formula">
+          \[
+            \E_f[h(X)] = \int h(x)\frac{f(x)}{g(x)}g(x)\,\d x \approx \frac{1}{N}\sum_{i=1}^N w(x_i)h(x_i), \quad x_i\sim g,\; w(x)=\frac{f(x)}{g(x)}.
+          \]
+        </div>
+        <p>Requirements: \(g(x)>0\) wherever \(f(x)|h(x)|>0\). Choose \(g\) with heavier tails than \(f\) in important regions; otherwise weights have high variance.</p>
+
+        <h3>6.3 Self-normalized importance sampling</h3>
+        <p>If only \(\tilde f(x)=Z f(x)\) is known,</p>
+        <div class="formula">
+          \[
+            \tilde w(x)=\frac{\tilde f(x)}{g(x)}, \qquad \E_f[h(X)]\approx \frac{\sum_{i=1}^N \tilde w(x_i)h(x_i)}{\sum_{i=1}^N \tilde w(x_i)}.
+          \]
+        </div>
+        <p>The unknown \(Z\) cancels in the ratio. This is a biased but consistent estimator.</p>
+
+        <div class="callout green">
+          <div class="label">Effective sample size intuition</div>
+          Highly variable weights mean a few samples dominate. Diagnostic: \(ESS \approx 1/\sum_i \bar w_i^2\) or \(N_{eff}\) formulas used in course. Large weight variance = bad proposal.
+        </div>
+      </section>
+
+      <section id="mcmc">
+        <h2>7. MCMC, Metropolis-Hastings, Gibbs <span class="badge exam">exam</span></h2>
+        <p class="lead">MCMC constructs a Markov chain whose stationary distribution is the target \(\pi\). The key proof tool is detailed balance; the key practical tools are acceptance ratios and full conditionals.</p>
+
+        <h3>7.1 Core MCMC conditions</h3>
+        <table>
+          <thead><tr><th>Condition</th><th>Meaning</th><th>Why it matters</th></tr></thead>
+          <tbody>
+            <tr><td>Stationary/invariant</td><td>\(\pi P=\pi\)</td><td>If you start in \(\pi\), you stay in \(\pi\)</td></tr>
+            <tr><td>Detailed balance (reversibility)</td><td>\(\pi(x)P(x,y)=\pi(y)P(y,x)\)</td><td>Sufficient for stationarity; easy to verify for MH</td></tr>
+            <tr><td>Irreducible</td><td>Can reach any relevant state from any other</td><td>Chain explores whole support</td></tr>
+            <tr><td>Aperiodic</td><td>No fixed cycle</td><td>Avoids periodic non-convergence</td></tr>
+            <tr><td>Ergodic (irreducible+aperiodic+recurrent as needed)</td><td>Averages converge to expectations under \(\pi\)</td><td>Justifies Monte Carlo estimates from chain</td></tr>
+          </tbody>
+        </table>
+
+        <h3>7.2 Metropolis-Hastings algorithm</h3>
+        <div class="formula">
+          \[
+            \alpha(x,y)=\min\left(1,\; \frac{\pi(y)q(x\mid y)}{\pi(x)q(y\mid x)}\right).
+          \]
+        </div>
+        <ol>
+          <li>Given \(x^{(t)}=x\), propose \(y\sim q(\cdot\mid x)\).</li>
+          <li>Compute \(\alpha(x,y)\).</li>
+          <li>Set \(x^{(t+1)}=y\) with prob \(\alpha(x,y)\), else \(x^{(t+1)}=x\).</li>
+        </ol>
+        <div class="callout green">
+          <div class="label">Constants cancel</div>
+          \(\pi\) can be unnormalized: \(\pi=\tilde\pi/Z\), so \(\pi(y)/\pi(x)=\tilde\pi(y)/\tilde\pi(x)\). Same for symmetric \(q\): \(q(x\mid y)=q(y\mid x)\) cancels.
+        </div>
+
+        <details>
+          <summary>Detailed balance proof template <span class="badge proof">proof</span></summary>
+          <p>For \(y\neq x\), \(P(x,y)=q(y\mid x)\alpha(x,y)\). Need \(\pi(x)q(y\mid x)\alpha(x,y)=\pi(y)q(x\mid y)\alpha(y,x)\).</p>
+          \[
+          \begin{aligned}
+            \pi(x)q(y\mid x)\alpha(x,y)&=\pi(x)q(y\mid x)\min\left(1,\frac{\pi(y)q(x\mid y)}{\pi(x)q(y\mid x)}\right)\\
+            &=\min\left(\pi(x)q(y\mid x),\;\pi(y)q(x\mid y)\right).
+          \end{aligned}
+          \]
+          <p>This is symmetric in \(x,y\), hence equals \(\pi(y)q(x\mid y)\alpha(y,x)\).</p>
+        </details>
+
+        <h3>7.3 Special cases and proposal tricks</h3>
+        <table>
+          <thead><tr><th>Case</th><th>Proposal</th><th>Acceptance ratio</th><th>Note</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>Random-walk Metropolis</td>
+              <td>\(q(y\mid x)=q(x\mid y)\)</td>
+              <td>\(\min(1,\pi(y)/\pi(x))\)</td>
+              <td>Step size controls acceptance/mixing</td>
+            </tr>
+            <tr>
+              <td>Independence sampler</td>
+              <td>\(q(y\mid x)=g(y)\)</td>
+              <td>\(\min\left(1,\frac{\pi(y)g(x)}{\pi(x)g(y)}\right)\)</td>
+              <td>Proposal should cover target tails</td>
+            </tr>
+            <tr>
+              <td>Gibbs sampler</td>
+              <td>\(q(y\mid x)=\pi(y_j\mid x_{-j})\) on component \(j\)</td>
+              <td>\(1\)</td>
+              <td>Special case of MH; needs full conditionals</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="callout amber">
+          <div class="label">Log-scale / positive parameters</div>
+          If \(\theta>0\), proposing on \(\phi=\log\theta\) avoids invalid negative proposals. Either include the Jacobian in the target/proposal logic or use a proposal whose density is written correctly in the same parameterization. Always write the MH ratio in one consistent coordinate system.
+        </div>
+
+        <h3>7.4 Gibbs sampling</h3>
+        <div class="formula">
+          \[
+            \theta_j^{(t+1)} \sim \pi\!\left(\theta_j \mid \theta_1^{(t+1)},\ldots,\theta_{j-1}^{(t+1)},\theta_{j+1}^{(t)},\ldots,\theta_d^{(t)}, x\right).
+          \]
+        </div>
+        <ul>
+          <li>Get each full conditional by taking joint posterior and treating everything except \(\theta_j\) as constant.</li>
+          <li>If conditional is a known kernel, sample directly (no rejection/MH step needed).</li>
+          <li>If not, can use Metropolis-within-Gibbs.</li>
+          <li>Highly correlated parameters cause slow mixing; consider blocking or reparameterization.</li>
+        </ul>
+
+        <h3>7.5 Convergence diagnostics / practical checks</h3>
+        <ul>
+          <li><strong>Trace plots:</strong> look for stationarity and good mixing, not trends/sticking.</li>
+          <li><strong>Autocorrelation:</strong> high autocorrelation means less information per draw; ESS decreases.</li>
+          <li><strong>Multiple chains:</strong> different starts should converge to same region.</li>
+          <li><strong>Burn-in:</strong> discard early transient draws, but burn-in does not fix non-convergence.</li>
+        </ul>
+      </section>
+
+      <section id="decision">
+        <h2>8. Decision Theory, Asymptotics &amp; Other Useful Moves</h2>
+        <p class="lead">These show up as short-answer/concept questions and occasionally as small derivations.</p>
+
+        <div class="grid two">
+          <div class="card">
+            <h3>8.1 Loss functions <span class="badge core">core</span></h3>
+            <table>
+              <thead><tr><th>Loss</th><th>Bayes estimator</th></tr></thead>
+              <tbody>
+                <tr><td>Quadratic: \(L(\theta,a)=(\theta-a)^2\)</td><td>Posterior mean \(\E[\theta\mid x]\)</td></tr>
+                <tr><td>Absolute: \(L(\theta,a)=|\theta-a|\)</td><td>Posterior median</td></tr>
+                <tr><td>0-1: \(L(\theta,a)=\ind(\theta\neq a)\)</td><td>Posterior mode / MAP (discrete/appropriate setting)</td></tr>
+                <tr><td>Asymmetric linear/check</td><td>Posterior quantile</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card">
+            <h3>8.2 Asymptotic intuition</h3>
+            <ul>
+              <li>With regular models and enough data, posterior concentrates near the true parameter; likelihood dominates prior.</li>
+              <li>MLE and posterior mode/mean often become close asymptotically (Bernstein–von Mises gives normal approximation under conditions).</li>
+              <li>Finite \(n\): prior can matter a lot. Large \(n\): posterior inference usually stabilizes, but <em>Bayes factors</em> can still be sensitive to prior width.</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3>8.3 Useful probability identities</h3>
+        <table>
+          <thead><tr><th>Identity</th><th>Form</th><th>Use</th></tr></thead>
+          <tbody>
+            <tr><td>Tower property</td><td>\(\E[X]=\E[\E[X\mid Y]]\)</td><td>Posterior predictive mean/variance, Rao-Blackwell intuition</td></tr>
+            <tr><td>Law of total variance</td><td>\(\Var(X)=\E[\Var(X\mid Y)] + \Var(\E[X\mid Y])\)</td><td>Hierarchical models, posterior predictive variance</td></tr>
+            <tr><td>Bayes rule for densities</td><td>\(\pi(\theta\mid x)\propto f(x\mid\theta)\pi(\theta)\)</td><td>Everything</td></tr>
+            <tr><td>Marginalization</td><td>\(p(x)=\int p(x,\theta)\d\theta\)</td><td>Prior/posterior predictive, marginal likelihood</td></tr>
+            <tr><td>Indicator trick</td><td>\(P(A)=\E[\ind_A]\)</td><td>Monte Carlo probability estimation, mixture allocations</td></tr>
+          </tbody>
+        </table>
+
+        <h3>8.4 Optimization/viewpoint tricks</h3>
+        <ul>
+          <li><strong>MAP:</strong> \(\hat\theta_{MAP}=\argmax_\theta [\log L(x\mid\theta)+\log\pi(\theta)]\). Prior acts as regularizer/penalty.</li>
+          <li><strong>MLE:</strong> MAP with flat prior (when appropriate/proper).</li>
+          <li><strong>Log posterior:</strong> convert mode-finding to optimization/sum of terms.</li>
+        </ul>
+      </section>
+
+      <section id="quick-ref">
+        <h2>9. Quick Reference: If You See This, Do This <span class="badge exam">exam</span></h2>
+        <p class="lead">Use this as a last-minute pattern matcher.</p>
+        <table>
+          <thead><tr><th>If you see...</th><th>Do this...</th><th>Why</th></tr></thead>
+          <tbody>
+            <tr><td>\(\int_0^1 \theta^{p-1}(1-\theta)^{q-1}\d\theta\)</td><td>Write \(B(p,q)=\Gamma(p)\Gamma(q)/\Gamma(p+q)\)</td><td>Beta kernel integrates to 1</td></tr>
+            <tr><td>\(\int_0^\infty \theta^{a-1}e^{-b\theta}\d\theta\)</td><td>Write \(\Gamma(a)/b^a\)</td><td>Gamma kernel integrates to 1</td></tr>
+            <tr><td>Gaussian exponent in \(\mu\)</td><td>Complete the square</td><td>Read off normal mean/variance</td></tr>
+            <tr><td>\(\sum (y_i-\mu)^2\)</td><td>Use \((n-1)s^2+n(\bar y-\mu)^2\)</td><td>Separates \(\mu\) from data scatter</td></tr>
+            <tr><td>Posterior has ugly normalizer</td><td>Keep \(\propto\), recognize kernel</td><td>You often don't need \(m(x)\)</td></tr>
+            <tr><td>Ratio \(\pi(y)/\pi(x)\) in MH</td><td>Use unnormalized \(\tilde\pi\)</td><td>\(Z\) cancels</td></tr>
+            <tr><td>Need to prove rejection sampling works</td><td>Compute \(P(X\in A\mid acc)\)</td><td>\(g\) and \(K\) cancel; leaves \(F(A)\)</td></tr>
+            <tr><td>Need to prove MH has target stationary dist.</td><td>Show detailed balance</td><td>Detailed balance \(\Rightarrow\) invariance</td></tr>
+            <tr><td>Gibbs proposal in MH form</td><td>Plug full conditional into ratio</td><td>Acceptance becomes 1</td></tr>
+            <tr><td>Mixture likelihood with \(\prod\sum\)</td><td>Introduce latent indicators \(z_{im}\)</td><td>Turns sum into product of powers</td></tr>
+            <tr><td>No data assigned to mixture component</td><td>Conditional = prior conditional</td><td>Likelihood factor is 1; prior must be proper</td></tr>
+            <tr><td>Bayes factor with improper prior</td><td>Check arbitrary constant \(c\)</td><td>Ordinary BF may be undefined; use fractional/partial BF</td></tr>
+            <tr><td>Expectation under hard target \(f\)</td><td>IS: sample \(g\), weight \(f/g\)</td><td>Unbiased/consistent Monte Carlo estimate</td></tr>
+            <tr><td>Normalizing constant unknown in IS</td><td>Self-normalize weights</td><td>\(\tilde f/Z\) gives \(Z\) cancellation</td></tr>
+            <tr><td>Positive parameter in random-walk proposal</td><td>Propose on log scale</td><td>Avoids invalid values; handle Jacobian/proposal consistently</td></tr>
+            <tr><td>Posterior mean asked between prior mean and MLE/data mean</td><td>Write as convex combination</td><td>\(\lambda\in(0,1)\) gives the inequality immediately</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="pitfalls">
+        <h2>10. Common Pitfalls</h2>
+        <div class="grid two">
+          <div class="callout red">
+            <div class="label">Don't forget the parameterization</div>
+            Gamma(rate \(b\)) vs Gamma(scale), Normal variance vs precision, Inverse-Gamma vs Gamma on precision. A right kernel with wrong parameter mapping loses marks.
+          </div>
+          <div class="callout red">
+            <div class="label">Proportionality is not equality</div>
+            \(\pi(\theta\mid x)\propto g(\theta)\) means equal up to a constant in \(\theta\). Don't write \(=\) unless you've included the normalizing constant.
+          </div>
+          <div class="callout amber">
+            <div class="label">Support matters</div>
+            Check \(\theta\in(0,1)\), \(\sigma^2>0\), \(\sum w_m=1\), proposal support covering target support. Many MCMC/integration mistakes are support mistakes.
+          </div>
+          <div class="callout amber">
+            <div class="label">Improper prior != improper posterior</div>
+            An improper prior can sometimes yield a proper posterior, but you must argue/integrate. Never assume. Also, improper priors break ordinary Bayes factors.
+          </div>
+          <div class="callout purple">
+            <div class="label">MH acceptance is not just target ratio</div>
+            It's \(\min(1,\frac{\pi(y)q(x\mid y)}{\pi(x)q(y\mid x)})\). The reverse proposal term disappears only for symmetric proposals.
+          </div>
+          <div class="callout purple">
+            <div class="label">Gibbs needs full conditionals</div>
+            "Draw from full conditional" means conditional on all other parameters and data. If the conditional isn't standard, you need another sampler step (Metropolis-within-Gibbs, slice, etc.).
+          </div>
+        </div>
+
+        <h3>Final exam micro-checklist</h3>
+        <ul>
+          <li>Write the object first: posterior, predictive, marginal likelihood, acceptance probability, weight.</li>
+          <li>Drop constants in \(\theta\) early; keep them if integrating over \(\theta\).</li>
+          <li>State kernel name/parameters after matching.</li>
+          <li>For proofs, say what cancels: \(K\), \(g(x)\), normalizing constant \(Z\), arbitrary improper-prior constant \(c\).</li>
+          <li>Sanity check: densities integrate to 1, probabilities in [0,1], variances positive, weights/proportions sum appropriately.</li>
+        </ul>
+      </section>
+
+      <div class="footer">
+        Built for MATH3871/5960 Bayesian Inference and Computation revision. Open this file in a browser for rendered LaTeX via MathJax.
+      </div>
+    </main>
+  </div>
+</body>
+</html>

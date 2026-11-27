@@ -1,73 +1,51 @@
-# Bayesian Inference and Computation
+# Bayesian Inference and Computation — animated walkthroughs
 
-[![Obsidian](https://img.shields.io/badge/Obsidian-Vault-7C3AED?logo=obsidian&logoColor=white)](https://obsidian.md)
-[![LaTeX](https://img.shields.io/badge/LaTeX-Math-008080?logo=latex&logoColor=white)](https://www.latex-project.org)
-[![Markdown](https://img.shields.io/badge/Markdown-Notes-000000?logo=markdown&logoColor=white)](https://commonmark.org)
+Subtitled, narrated Manim walkthroughs for Weeks 7–10, built from the lecture
+and tutorial PDFs in `lectures/` and `tutorial/`.
 
-
-An Obsidian vault of course notes for **MATH3871/MATH5960 — Bayesian Inference and Computation** (Term 3, 2026, Prof. Scott Sisson), turned into a linked knowledge graph so the material can be learned by following how one idea builds on the next.
-
-## How to use this vault
-
-1. Open the folder as an Obsidian vault.
-2. Start at **`notes/Bayesian Inference and Computation.md`** — the Home map.
-3. Follow the **Builds on** / **Leads to** links in each note's *Connections* section.
-4. Use **Graph view** (colour-coded by week/type) and the **Backlinks** panel to explore.
-5. Follow any note's **Source** link to jump back to the original lecture/tutorial PDF.
-
-## Structure
+## Repository layout
 
 ```
-.
-├── assignment/ # Assignment materials and submission
-├── final-exam/ # Sample final exam and solutions
-├── lectures/   # Lecture PDFs (Weeks 1–5, 7–10)
-├── mid-term/   # Mid-session exams, solutions, and formula sheet
-├── tutorial/   # Tutorial problem PDFs (Weeks 1–4, 7–10)
-└── notes/      # The knowledge graph (64 interlinked markdown notes)
-    ├── Bayesian Inference and Computation.md   # Home map (start here)
-    ├── Week 1/   # Foundations, frequentist vs Bayesian, Monte Carlo basics
-    ├── Week 2/   # Conjugate/improper/Jeffreys priors, inversion sampling
-    ├── Week 3/   # Mixture priors, multivariate models, rejection sampling
-    ├── Week 4/   # Decisions, asymptotics, importance sampling
-    └── Reference/ # Distribution notes, Glossary, Probability Distributions, History
+src/                 Manim source and build tooling
+  common.py            shared clip-safe scene framework (Weeks 8–10)
+  build_week.py        stitch scenes, merge SRTs, generate narration, mux
+  narrate.py           macOS `say` narration timed from SRT cues
+  speech.py            pronunciation map and spoken-length estimates
+  verify.py            final QA: streams, durations, SRT indices, decode
+  week7/               Week 7 scenes, plan, README
+  week8/               Week 8 scenes and plan
+  week9/               Week 9 scenes and plan
+  week10/              Week 10 scenes and plan
+videos/              final artifacts
+  week7/               final.mp4, final.srt, final_subtitled.mp4,
+                       narration.m4a, final_narrated.mp4
+  week8/               (same)
+  week9/               (same)
+  week10/              (same)
 ```
 
-## Note conventions
+`final_narrated.mp4` is the finished video: burned-in-safe layout, soft
+subtitles (`mov_text`), and a local macOS narration track. `final.srt` is a
+standalone subtitle file for the whole week.
 
-Every concept note follows the same template:
+## Rebuild
 
-- **Frontmatter** — `tags`, `week`, `type` (used by the colour-coded graph).
-- **One-line summary** — an `> [!abstract]` callout.
-- **Body** — intuition, formal results, and worked examples with LaTeX maths.
-- **Connections** — `Builds on` (prerequisites), `Leads to` (what's next), `See also`.
-- **Source** — links to the originating slide(s)/question(s).
+```sh
+# render every scene of a week (LaTeX needs MacTeX on PATH)
+cd src/week8
+PATH="/Library/TeX/texbin:$PATH" ../../.venv/bin/manim -ql script.py
 
-Links use Obsidian `[[wikilinks]]`, which resolve by note name regardless of folder, so moving a note never breaks the graph. Notes are placed in the week they are introduced (per `week` frontmatter); cross-cutting reference notes live in `Reference/`.
+# stitch + subtitle + narrate + mux
+cd ../..
+.venv/bin/python src/build_week.py week8
+```
 
-## Course roadmap
+## Design notes
 
-| Week | Theme | Materials | Notes |
-|---|---|---|---|
-| 1 | Foundations & Monte Carlo | Lecture, tutorial | `notes/Week 1/Week 1 Overview.md` |
-| 2 | Priors & inversion sampling | Lecture, tutorial | `notes/Week 2/Week 2 Overview.md` |
-| 3 | Multivariate models & rejection sampling | Lecture, tutorial | `notes/Week 3/Week 3 Overview.md` |
-| 4 | Decisions, asymptotics & importance sampling | Lecture, tutorial | `notes/Week 4/Week 4 Overview.md` |
-| 5 | — | Lecture | — |
-| 7 | — | Lecture, tutorial | — |
-| 8 | — | Lecture, tutorial | — |
-| 9 | — | Lecture, tutorial | — |
-| 10 | — | Lecture, tutorial | — |
-
-*Weeks 6 materials are not currently in the repo; Weeks 5, 7–10 have PDFs but no linked notes yet.*
-
-## Reference
-
-- `notes/Reference/Probability Distributions.md` — index of distributions used.
-- `notes/Week 2/Conjugate Prior Reference Table.md` — all standard conjugate pairs.
-- `notes/Reference/Glossary.md` — every symbol and term in one place.
-
-## Notes
-
-- The vault is plain markdown; no plugins beyond Obsidian core are required.
-- PDFs are the original source material and are linked from the notes, not modified.
+- All text is fitted into a safe frame (`fit()` in `src/common.py` and
+  `src/week7/script.py`), so equations and labels never leave the 854×480 frame.
+- Subtitles come from Manim's `add_subcaption`, merged into one SRT per week.
+- Narration is generated locally with `say -v Samantha` at a fixed natural rate
+  (210 wpm), so no external API key is required. Each caption's on-screen hold is
+  computed from its *spoken* length (`src/speech.py`), so mathematical symbols
+  never force the voice to speed up or overlap the next cue.

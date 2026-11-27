@@ -1,0 +1,459 @@
+1
+00:00:00,900 --> 00:00:07,600
+Week 10 combines latent indicators with MCMC and predictive checking.
+
+2
+00:00:08,816 --> 00:00:16,616
+Four stories: fitting mixtures, latent labels, temporal change, and a psychology application.
+
+3
+00:00:17,866 --> 00:00:24,016
+Priors, hierarchies, MCMC and Bayes factors all reappear here.
+
+4
+00:00:28,700 --> 00:00:33,200
+Combine component distributions with mixing weights.
+
+5
+00:00:34,416 --> 00:00:41,116
+Male and female height densities combine into a bimodal-looking mixture.
+
+6
+00:00:42,333 --> 00:00:49,033
+The mixture density is a weighted sum of component densities.
+
+7
+00:00:50,250 --> 00:00:56,400
+Each observation is drawn from one of M components.
+
+8
+00:01:01,100 --> 00:01:05,600
+Flexible densities, classification, and cluster inference.
+
+9
+00:01:06,816 --> 00:01:12,416
+Normal mixtures can approximate almost any continuous density.
+
+10
+00:01:13,666 --> 00:01:20,366
+Latent labels tell us which subpopulation an observation belongs to.
+
+11
+00:01:21,583 --> 00:01:28,283
+We may infer the number of clusters and their characteristics.
+
+12
+00:01:32,966 --> 00:01:39,116
+The log of a sum destroys the usual simplifications.
+
+13
+00:01:40,349 --> 00:01:47,599
+The sum sits inside the log, so log-likelihoods do not decompose.
+
+14
+00:01:48,799 --> 00:01:54,399
+Standard conjugate updates disappear in the marginalised model.
+
+15
+00:01:55,649 --> 00:02:01,799
+Latent labels are the key to restoring simple conditionals.
+
+16
+00:02:06,500 --> 00:02:12,650
+One-hot encoding turns component membership into a random variable.
+
+17
+00:02:13,883 --> 00:02:20,033
+Exactly one element of the vector z_i equals one.
+
+18
+00:02:21,266 --> 00:02:28,516
+The prior probability that i belongs to component m is lambda_m.
+
+19
+00:02:29,716 --> 00:02:35,866
+This is the trick that makes Gibbs sampling possible.
+
+20
+00:02:40,566 --> 00:02:45,616
+With z observed, the complete-data likelihood factorises.
+
+21
+00:02:46,816 --> 00:02:53,516
+Only the component selected by z_im contributes for each observation.
+
+22
+00:02:54,732 --> 00:03:00,882
+Multiplying by the indicator prior gives a clean product.
+
+23
+00:03:02,116 --> 00:03:08,266
+The augmented model is much easier to work with.
+
+24
+00:03:12,966 --> 00:03:20,216
+Dirichlet is the multivariate Beta and is conjugate to multinomial labels.
+
+25
+00:03:21,416 --> 00:03:29,216
+The Dirichlet lives on the simplex, so the weights sum to one.
+
+26
+00:03:30,466 --> 00:03:34,966
+Each marginal weight is Beta distributed.
+
+27
+00:03:36,182 --> 00:03:41,232
+All ones is a common non-informative specification.
+
+28
+00:03:45,900 --> 00:03:52,050
+Three blocks of unknowns with three simple conditional updates.
+
+29
+00:03:53,283 --> 00:03:58,883
+The augmented posterior exposes three tractable conditional structures.
+
+30
+00:04:00,133 --> 00:04:05,733
+Gibbs cycles through component parameters, weights, and labels.
+
+31
+00:04:06,983 --> 00:04:13,133
+This is the main motivation for introducing the indicators.
+
+32
+00:04:17,833 --> 00:04:25,083
+Given labels, each component is fitted only to its own observations.
+
+33
+00:04:26,283 --> 00:04:31,883
+Only observations currently allocated to component m remain.
+
+34
+00:04:33,133 --> 00:04:39,833
+This is just the standard posterior for that component's data.
+
+35
+00:04:44,500 --> 00:04:49,550
+Dirichlet-multinomial conjugacy gives a direct Gibbs draw.
+
+36
+00:04:50,750 --> 00:04:56,900
+Count how many observations are currently in each component.
+
+37
+00:04:58,133 --> 00:05:04,283
+Posterior Dirichlet parameters are prior counts plus allocated counts.
+
+38
+00:05:05,516 --> 00:05:09,516
+A straightforward conjugate update.
+
+39
+00:05:14,233 --> 00:05:20,933
+Each label is a categorical draw with posterior membership probabilities.
+
+40
+00:05:22,149 --> 00:05:27,749
+Unnormalised weight is prior weight times component density.
+
+41
+00:05:28,999 --> 00:05:34,599
+Draw a one-hot label with these normalised probabilities.
+
+42
+00:05:35,849 --> 00:05:40,349
+Each observation can be updated separately.
+
+43
+00:05:45,033 --> 00:05:50,083
+Peak sensitivity wavelengths of 2-component eye data.
+
+44
+00:05:51,283 --> 00:05:57,433
+Posterior ordering mu1 < mu2 and weights near 60:40.
+
+45
+00:05:58,666 --> 00:06:04,816
+Label probabilities near 545 nm are close to 0.5.
+
+46
+00:06:06,049 --> 00:06:10,549
+MCMC explores uncertainty in component membership.
+
+47
+00:06:15,233 --> 00:06:20,283
+Generate new observations by propagating posterior uncertainty.
+
+48
+00:06:21,483 --> 00:06:27,633
+Sample parameters, then a component, then a new observation.
+
+49
+00:06:28,866 --> 00:06:35,566
+The predictive density averages the mixture over the joint posterior.
+
+50
+00:06:36,783 --> 00:06:43,483
+Only theta and lambda are needed for a new observation.
+
+51
+00:06:48,166 --> 00:06:54,866
+Which component is a new value y most likely from?
+
+52
+00:06:56,082 --> 00:07:01,682
+This is the conditional membership probability given parameters.
+
+53
+00:07:02,932 --> 00:07:07,432
+Average this ratio over posterior draws.
+
+54
+00:07:08,649 --> 00:07:14,249
+This gives a principled classification of future cases.
+
+55
+00:07:18,966 --> 00:07:25,666
+Two equivalent ways to estimate membership for an existing xi.
+
+56
+00:07:26,882 --> 00:07:32,482
+Plug posterior draws into the conditional membership formula.
+
+57
+00:07:33,732 --> 00:07:42,082
+If z_i was recorded, just count how often it was allocated to m.
+
+58
+00:07:43,316 --> 00:07:47,816
+The Monte Carlo frequency estimates E[I(z_im=1)].
+
+59
+00:07:52,500 --> 00:07:58,650
+A mixture is invariant to permuting the component labels.
+
+60
+00:07:59,883 --> 00:08:06,583
+Any permutation of M labels gives the same mixture density.
+
+61
+00:08:07,800 --> 00:08:13,400
+Label switching makes un constrained component inference meaningless.
+
+62
+00:08:14,650 --> 00:08:19,150
+Ordering constraints select one representative permutation.
+
+63
+00:08:23,833 --> 00:08:28,883
+A mixture whose labels have temporal structure.
+
+64
+00:08:30,083 --> 00:08:36,783
+Coal-mining disasters per year suggest a rate change around 1890.
+
+65
+00:08:37,999 --> 00:08:44,149
+The change point tau is itself an unknown parameter.
+
+66
+00:08:45,383 --> 00:08:52,083
+The posterior on tau answers 'when'; Bayes factors answer 'whether'.
+
+67
+00:08:56,766 --> 00:09:01,266
+Existence, timing, and number of changes.
+
+68
+00:09:02,482 --> 00:09:09,732
+A diffuse posterior on tau means the timing is not identified.
+
+69
+00:09:10,932 --> 00:09:16,532
+The modal year is the estimated change point.
+
+70
+00:09:17,782 --> 00:09:22,832
+Multiple change points extend the same idea.
+
+71
+00:09:27,500 --> 00:09:33,650
+17 subjects, 30 trials each — a psychology application.
+
+72
+00:09:34,883 --> 00:09:39,383
+11 non-schizophrenic and 6 schizophrenic subjects.
+
+73
+00:09:40,600 --> 00:09:46,200
+Two effects: general slowing and occasional long delays.
+
+74
+00:09:50,900 --> 00:09:56,500
+Two mechanisms produce slow responses in schizophrenic subjects.
+
+75
+00:09:57,750 --> 00:10:04,450
+On some trials a schizophrenic subject has an attentional lapse.
+
+76
+00:10:05,666 --> 00:10:10,716
+A general slowing applies to every response.
+
+77
+00:10:11,916 --> 00:10:19,166
+We model log times since raw times are positive and skewed.
+
+78
+00:10:23,833 --> 00:10:29,433
+Individual effects plus a two-component mixture for schizophrenics.
+
+79
+00:10:30,683 --> 00:10:37,383
+S_i is 0 for controls and 1 for schizophrenic subjects.
+
+80
+00:10:38,599 --> 00:10:44,199
+These are the three parameters of primary interest.
+
+81
+00:10:48,900 --> 00:10:55,050
+A sign constraint is needed for the delay parameter.
+
+82
+00:10:56,283 --> 00:11:01,883
+Diffuse priors with a positive constraint on tau.
+
+83
+00:11:03,133 --> 00:11:09,833
+The constraint breaks a symmetry and makes the model identifiable.
+
+84
+00:11:11,050 --> 00:11:17,200
+A proper prior keeps inference well-defined in that case.
+
+85
+00:11:21,900 --> 00:11:26,400
+All three parameters show schizophrenic effects.
+
+86
+00:11:27,616 --> 00:11:33,766
+Posterior medians with 2.5% and 97.5% quantiles in brackets.
+
+87
+00:11:34,1000 --> 00:11:41,700
+A typical 38% increase in response time from motor retardation.
+
+88
+00:11:42,916 --> 00:11:47,966
+Attentional lapses roughly double the response time.
+
+89
+00:11:52,633 --> 00:11:58,783
+The model assumes equal variances — is that plausible?
+
+90
+00:12:00,016 --> 00:12:05,066
+Compare observed spread statistics to predictive simulations.
+
+91
+00:12:06,266 --> 00:12:13,516
+Some schizophrenic subjects are far more variable than the model allows.
+
+92
+00:12:14,716 --> 00:12:20,866
+Predictive checking tells us how to improve the model.
+
+93
+00:12:25,566 --> 00:12:31,716
+Add individual susceptibility W_i and an extra variance component.
+
+94
+00:12:32,949 --> 00:12:40,749
+Some subjects are prone to delays, and delayed trials have larger variance.
+
+95
+00:12:41,999 --> 00:12:48,149
+The old model is nested inside the new one.
+
+96
+00:12:49,382 --> 00:12:55,532
+More trials are delayed, but each delay is shorter.
+
+97
+00:13:00,233 --> 00:13:04,733
+Flexibility, latent variables, and model choice.
+
+98
+00:13:05,949 --> 00:13:12,099
+Latent labels are the computational workhorse of mixture modelling.
+
+99
+00:13:13,333 --> 00:13:18,383
+Both diagnostic and formal approaches are available.
+
+100
+00:13:19,583 --> 00:13:26,833
+The tools from this course are the foundation for modern research.
+
+101
+00:13:31,500 --> 00:13:35,1000
+School means with known sampling variances.
+
+102
+00:13:37,216 --> 00:13:42,816
+A two-level normal hierarchy for the eight schools.
+
+103
+00:13:44,066 --> 00:13:51,316
+The full conditional is a precision-weighted average of data and hypermean.
+
+104
+00:13:52,516 --> 00:13:58,666
+Marginalising theta_j gives the marginal likelihood for the hyperparameters.
+
+105
+00:13:59,900 --> 00:14:06,050
+Sample theta, mu and tau in a Gibbs-style scheme.
+
+106
+00:14:10,766 --> 00:14:15,266
+A beta-binomial hierarchy for surgical mortality.
+
+107
+00:14:16,482 --> 00:14:22,082
+Hospital 1: 3/97 deaths; Hospital 2: 18/148 deaths.
+
+108
+00:14:23,332 --> 00:14:30,032
+The full conditional for each mortality rate is conjugate Beta.
+
+109
+00:14:31,249 --> 00:14:37,949
+The hyperparameter conditional needs a non-conjugate update such as MH.
+
+110
+00:14:39,166 --> 00:14:46,416
+Mortality looks higher in Hospital 2, but partly may be chance.
+
+111
+00:14:51,100 --> 00:14:56,150
+A two-component mixture prior for school effects.
+
+112
+00:14:57,350 --> 00:15:02,950
+Most schools near zero, a few strongly positive.
+
+113
+00:15:04,200 --> 00:15:10,900
+Ordering or fixing labels prevents symmetry in the component posteriors.
+
+114
+00:15:12,116 --> 00:15:18,816
+Marginalising theta_j gives a mixture of normals for the data.
+
+115
+00:15:20,033 --> 00:15:26,733
+This posterior weight shows how each observation changes the classification.

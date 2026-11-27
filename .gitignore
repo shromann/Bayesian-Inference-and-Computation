@@ -9,3 +9,7 @@
 node_modules/
 package-lock.json
 package.json
+
+# Generated Manim cache / intermediate renders
+src/*/media/
+__pycache__/

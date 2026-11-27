@@ -1,0 +1,359 @@
+1
+00:00:00,900 --> 00:00:10,350
+Week 8 asks how to compare hypotheses and models, and why Bayesian updating is coherent.
+
+2
+00:00:11,550 --> 00:00:18,250
+Four ideas: test hypotheses, compare models, check sensitivity, update sequentially.
+
+3
+00:00:19,466 --> 00:00:26,716
+The Bayes factor will be the central object of the lecture.
+
+4
+00:00:31,367 --> 00:00:39,717
+Jeffreys' test: put prior probabilities on two point hypotheses and use Bayes' theorem.
+
+5
+00:00:40,950 --> 00:00:45,450
+Two mutually exclusive, exhaustive point hypotheses.
+
+6
+00:00:46,667 --> 00:00:52,817
+Bayes' theorem gives the posterior probability of the null.
+
+7
+00:00:54,050 --> 00:00:59,650
+Posterior odds = Bayes factor x prior odds.
+
+8
+00:01:00,900 --> 00:01:07,600
+No significance level, and no awkward 'fail to reject' language.
+
+9
+00:01:12,300 --> 00:01:18,450
+Normal data with known variance and two candidate means.
+
+10
+00:01:19,683 --> 00:01:27,483
+The sample mean is sufficient; T|H0 is N(0,1/n) and T|H1 is N(1,1/n).
+
+11
+00:01:28,733 --> 00:01:35,983
+With equal prior odds, the posterior odds collapse to this exponential.
+
+12
+00:01:37,183 --> 00:01:45,533
+At xbar = 2 the odds are 3.1e-7, so H1 is overwhelmingly favoured.
+
+13
+00:01:46,766 --> 00:01:55,666
+The log-odds are linear in xbar; the switch-over point is exactly xbar = 1/2.
+
+14
+00:02:00,367 --> 00:02:09,267
+Now the alternative is a whole range of parameter values with a prior attached.
+
+15
+00:02:10,483 --> 00:02:18,283
+The alternative spreads its prior across all theta not equal to theta0.
+
+16
+00:02:19,533 --> 00:02:27,333
+The denominator is an average likelihood under H1, weighted by its prior.
+
+17
+00:02:28,583 --> 00:02:35,283
+This averaging is what makes Bayes factors automatically penalise flexibility.
+
+18
+00:02:39,967 --> 00:02:47,767
+The same normal model, but theta under H1 has a N(1,1) prior.
+
+19
+00:02:49,017 --> 00:02:56,267
+Complete the square in the exponent to perform the integral analytically.
+
+20
+00:02:57,467 --> 00:03:03,067
+The posterior odds reduce to this closed form.
+
+21
+00:03:04,317 --> 00:03:11,567
+Evidence strongly favours the alternative; the integral is centred near 1.
+
+22
+00:03:16,233 --> 00:03:25,133
+A hypothesis is a subset of the parameter space; nuisance parameters are integrated out.
+
+23
+00:03:26,349 --> 00:03:33,049
+Integrate over sigma^2 under each hypothesis to get marginal likelihoods.
+
+24
+00:03:34,266 --> 00:03:39,866
+Both numerator and denominator marginalise the nuisance variance.
+
+25
+00:03:41,116 --> 00:03:48,916
+For a composite null, integrate the same prior over two disjoint regions.
+
+26
+00:03:53,633 --> 00:04:02,533
+To compare many models, embed them all in one joint model indexed by m.
+
+27
+00:04:03,749 --> 00:04:10,999
+The augmented parameter records both the model label and its parameters.
+
+28
+00:04:12,199 --> 00:04:19,449
+The prior factorises into a within-model prior and a model prior.
+
+29
+00:04:20,649 --> 00:04:27,349
+Prior probabilities of overlapping model features must be added carefully.
+
+30
+00:04:32,033 --> 00:04:36,533
+Predicting building electricity use from temperature.
+
+31
+00:04:37,749 --> 00:04:42,799
+Linear, quadratic, and a heavy-tailed error variant.
+
+32
+00:04:43,999 --> 00:04:51,249
+On hot days consumption can rise again, motivating the quadratic term.
+
+33
+00:04:52,449 --> 00:04:59,149
+Different dimensions and interpretations make priors hard to compare naively.
+
+34
+00:05:03,833 --> 00:05:11,633
+The normalising constant of each model is the key to model probabilities.
+
+35
+00:05:12,883 --> 00:05:19,033
+The evidence is the average likelihood over the prior.
+
+36
+00:05:20,266 --> 00:05:26,416
+The joint posterior factorises into parameter and model posteriors.
+
+37
+00:05:27,649 --> 00:05:34,349
+Posterior model probability is prior model probability reweighted by evidence.
+
+38
+00:05:35,566 --> 00:05:40,616
+Model averaging propagates model uncertainty into predictions.
+
+39
+00:05:45,300 --> 00:05:52,550
+Are measurement errors centred on zero, or is the device miscalibrated?
+
+40
+00:05:53,750 --> 00:06:00,1000
+Model 1 has unknown mean and variance with a normal-inverse-gamma prior.
+
+41
+00:06:02,200 --> 00:06:11,650
+Model 2 fixes the mean at zero and uses the same marginal prior for sigma^2.
+
+42
+00:06:12,850 --> 00:06:19,550
+The marginal likelihoods differ only through these updated scale parameters.
+
+43
+00:06:20,766 --> 00:06:26,916
+Posterior model probabilities follow directly from the two evidences.
+
+44
+00:06:31,633 --> 00:06:39,983
+When there are many models, compare pairs instead of computing every posterior probability.
+
+45
+00:06:41,216 --> 00:06:48,466
+The common m(x) cancels, leaving prior odds times the Bayes factor.
+
+46
+00:06:49,666 --> 00:06:55,816
+The Bayes factor is the ratio of marginal likelihoods.
+
+47
+00:06:57,049 --> 00:07:03,749
+With two models, posterior probability increases whenever B12 > 1.
+
+48
+00:07:08,433 --> 00:07:15,133
+Two nonnegative likelihoods with the same Gamma prior on theta.
+
+49
+00:07:16,349 --> 00:07:23,049
+Both models use the same Gamma(t,b) prior on the rate.
+
+50
+00:07:24,266 --> 00:07:30,416
+The ratio has a compact form with three pieces.
+
+51
+00:07:31,649 --> 00:07:40,549
+A is a Gamma-ratio, B uses the mean square, C uses the sample mean.
+
+52
+00:07:45,233 --> 00:07:53,033
+The smaller model is the larger model at a special parameter value.
+
+53
+00:07:54,283 --> 00:08:03,183
+Nested means the small model is a slice of the large one at phi0.
+
+54
+00:08:04,399 --> 00:08:11,649
+The prior is a spike at phi0 plus a density elsewhere.
+
+55
+00:08:12,849 --> 00:08:19,549
+The Bayes factor is the posterior-to-prior density ratio at phi0.
+
+56
+00:08:24,233 --> 00:08:30,383
+Evidence is an integral; Monte Carlo estimates need care.
+
+57
+00:08:31,616 --> 00:08:38,316
+Prior Monte Carlo is cheap but wasteful for diffuse priors.
+
+58
+00:08:39,533 --> 00:08:46,783
+Importance sampling is efficient when g is close to the posterior.
+
+59
+00:08:47,983 --> 00:08:54,133
+A ratio of unbiased evidence estimates is itself biased.
+
+60
+00:08:55,366 --> 00:09:01,516
+The harmonic mean estimator is not recommended in practice.
+
+61
+00:09:06,233 --> 00:09:11,833
+Diffuse priors can make Bayes factors behave strangely.
+
+62
+00:09:13,083 --> 00:09:18,683
+Spreading a uniform prior thinner shrinks the evidence.
+
+63
+00:09:19,933 --> 00:09:28,283
+The posterior stabilises but the prior density goes to zero, so B01 diverges.
+
+64
+00:09:29,516 --> 00:09:35,666
+Jeffreys' improper variance prior always favours the smaller model.
+
+65
+00:09:36,899 --> 00:09:42,499
+Careful prior choice and sensitivity analysis are essential.
+
+66
+00:09:47,233 --> 00:09:55,033
+Bayesian updating gives the same answer no matter how data are batched.
+
+67
+00:09:56,283 --> 00:10:03,533
+Use each posterior as the next prior when blocks arrive sequentially.
+
+68
+00:10:04,733 --> 00:10:11,983
+Coherence means the order of the two loss contributions is irrelevant.
+
+69
+00:10:13,183 --> 00:10:19,333
+Bissiri et al.: only the exponential form is coherent.
+
+70
+00:10:20,566 --> 00:10:26,716
+With log-likelihood loss, coherence follows from commutativity of multiplication.
+
+71
+00:10:31,433 --> 00:10:38,133
+Split data into a training block and a test block.
+
+72
+00:10:39,349 --> 00:10:46,049
+Evidence factorises into a training term and a conditional term.
+
+73
+00:10:47,266 --> 00:10:54,516
+The full Bayes factor is the product of two partial factors.
+
+74
+00:10:55,716 --> 00:11:02,416
+Any arbitrary multiplicative constant cancels in the partial Bayes factor.
+
+75
+00:11:03,633 --> 00:11:09,783
+Training-sample methods make model comparison robust to vague priors.
+
+76
+00:11:14,499 --> 00:11:20,649
+Verify that Metropolis-Hastings satisfies detailed balance in both cases.
+
+77
+00:11:21,882 --> 00:11:27,482
+The transition kernel is proposal times acceptance probability.
+
+78
+00:11:28,732 --> 00:11:35,982
+For a stay, both sides are identical, so balance holds trivially.
+
+79
+00:11:37,182 --> 00:11:41,682
+Multiplying out gives a symmetric minimum.
+
+80
+00:11:42,899 --> 00:11:48,499
+Swapping theta and theta* leaves the expression unchanged.
+
+81
+00:11:53,233 --> 00:12:01,033
+For a positive parameter, propose on the log scale and transform back.
+
+82
+00:12:02,283 --> 00:12:07,883
+The transformed target picks up the Jacobian e^phi.
+
+83
+00:12:09,133 --> 00:12:18,033
+The proposal is symmetric on the log scale, so only the target ratio remains.
+
+84
+00:12:19,249 --> 00:12:28,699
+Back on the theta scale this is the familiar ratio with an extra theta factor.
+
+85
+00:12:29,899 --> 00:12:34,399
+The lognormal ratio q(theta*,theta)/q(theta,theta*) equals theta*/theta.
+
+86
+00:12:39,099 --> 00:12:45,249
+Palindromic scan orders make a deterministic Gibbs sampler reversible.
+
+87
+00:12:46,482 --> 00:12:51,532
+Chain the kernels in a forward-then-backward order.
+
+88
+00:12:52,732 --> 00:12:59,982
+Each Pi preserves pi, and reversing a palindromic product reproduces it.
+
+89
+00:13:01,182 --> 00:13:06,232
+Hence the combined kernel satisfies detailed balance.
+
+90
+00:13:07,432 --> 00:13:13,582
+A reversible deterministic-scan Gibbs sampler updates in palindromic order.
